@@ -3,7 +3,7 @@ class PitcherSeason < ApplicationRecord
 
   # バリデーション
   validates :games, presence: true, inclusion: 0..200
-  validates :innings, presence: true, inclusion: 0..250
+  validates :innings, presence: true, inclusion: 0..500
   validates :thirds, presence: true, inclusion: 0..3
   validates :wins, presence: true, inclusion: 0..200
   validates :loses, presence: true, inclusion: 0..200

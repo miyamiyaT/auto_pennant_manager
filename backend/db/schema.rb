@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_08_12_112642) do
+ActiveRecord::Schema.define(version: 2026_01_11_161703) do
 
   create_table "batter_abilities", force: :cascade do |t|
     t.integer "player_season_id"
@@ -33,6 +33,14 @@ ActiveRecord::Schema.define(version: 2025_08_12_112642) do
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "clutch_rank", default: 3, null: false
+    t.integer "vs_lhp_rank", default: 3, null: false
+    t.integer "stealing_rank", default: 3, null: false
+    t.integer "running_rank", default: 3, null: false
+    t.integer "throwing_rank", default: 3, null: false
+    t.integer "catcher_rank", default: 0
+    t.integer "grit_rank", default: 3, null: false
+    t.integer "recovery_rank", default: 3, null: false
   end
 
   create_table "batter_seasons", force: :cascade do |t|
@@ -82,6 +90,13 @@ ActiveRecord::Schema.define(version: 2025_08_12_112642) do
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "w_risp_rank", default: 3, null: false
+    t.integer "heather_rank", default: 3, null: false
+    t.integer "vs_lbh_rank", default: 3, null: false
+    t.integer "agile_rank", default: 3, null: false
+    t.integer "poise_rank", default: 3, null: false
+    t.integer "grit_rank", default: 3, null: false
+    t.integer "recovery_rank", default: 3, null: false
   end
 
   create_table "pitcher_seasons", force: :cascade do |t|

@@ -1,3 +1,5 @@
+GRADES = %w[G F E D C B A S].freeze
+
 FactoryBot.define do
   factory :batter_ability do
     trajectory { Faker::Number.between(from: 1, to: 4) }
@@ -7,14 +9,14 @@ FactoryBot.define do
     arm_strength { Faker::Number.between(from: 1, to: 100) }
     fielding { Faker::Number.between(from: 1, to: 100) }
     catching { Faker::Number.between(from: 1, to: 100) }
-    clutch { ['G','F','E','D','C','B','A','S'] .sample }
-    vs_lhp { ['G','F','E','D','C','B','A','S']  .sample }
-    stearing { ['G','F','E','D','C','B','A','S'] .sample }
-    runnning { ['G','F','E','D','C','B','A','S'] .sample }
-    throwing { ['G','F','E','D','C','B','A','S'] .sample }
-    catcher { ['G','F','E','D','C','B','A','S'] .sample }
-    grit { ['G','F','E','D','C','B','A','S'] .sample }
-    recovery { ['G','F','E','D','C','B','A','S'] .sample }
+    clutch { GRADES.sample }
+    vs_lhp { GRADES.sample }
+    stearing { GRADES.sample }
+    runnning { GRADES.sample }
+    throwing { GRADES.sample }
+    catcher { GRADES.sample }
+    grit { GRADES.sample }
+    recovery { GRADES.sample }
     special_ability { Faker::Creature::Animal.name[0, 100] }
   end
 end
