@@ -4,8 +4,6 @@ class Player < ApplicationRecord
   # バリデーション
   validates :name, length: { maximum: 10 }, presence: true
   validates :birthday, presence: true, format: { with: /\A\d{4}-\d{2}-\d{2}\z/ }
-  validates :is_favorite, inclusion: { in: [true, false] }
-  validates :is_active, inclusion: { in: [true, false] }
   validates :memo, presence: false
   validates :deleted_at, absence: true
 

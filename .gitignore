@@ -1,0 +1,163 @@
+
+# ============================================================
+# Monorepo: Rails (backend) + React (frontend) + Docker
+# ============================================================
+
+# ---------------------------
+# OS / Editor / Tooling
+# ---------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ---------------------------
+# Root-level common ignores
+# ---------------------------
+# ローカル環境変数ファイル（テンプレートはコミット推奨）
+.env
+.env.local
+.envrc
+!.env.example
+
+# ログや一時ファイル
+logs/
+tmp/
+.cache/
+*.log
+
+# Node 用共通
+node_modules/
+dist/
+dist-ssr/
+*.local
+yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+pnpm-debug.log*
+lerna-debug.log*
+
+# ---------------------------
+# Docker related
+# ---------------------------
+# Docker のローカルオーバーライドはコミットしない（運用に合わせて調整）
+docker-compose.override.yml
+# ローカルビルドの残骸
+**/.dockerignore.tmp
+.docker/            # ローカル用のビルドキャッシュ・設定を置く場合
+docker/*.local.*    # ローカル専用の定義ファイル
+
+# ---------------------------
+# Rails (backend)
+# ---------------------------
+/backend/*.rbc
+/backend/capybara-*.html
+/backend/.rspec
+
+# DB (SQLite を使う場合のみ。PostgreSQL/MySQLなら不要)
+# SQLite のファイルはコミットしない
+/backend/db/*.sqlite3
+/backend/db/*.sqlite3-journal
+/backend/db/*.sqlite3-[0-9]*
+
+# ログ・一時ファイル
+/backend/log/*
+/backend/tmp/*
+!/backend/log/.keep
+!/backend/tmp/.keep
+
+# PID ファイルは無視、ディレクトリは保持
+/backend/tmp/pids/*
+!/backend/tmp/pids/
+!/backend/tmp/pids/.keep
+
+# Storage（開発アップロード）
+/backend/storage/*
+!/backend/storage/.keep
+/backend/tmp/storage/*
+!/backend/tmp/storage/
+!/backend/tmp/storage/.keep
+
+# Rails assets / packs（プリコンパイル成果物）
+/backend/public/packs
+/backend/public/packs-test
+/backend/public/assets
+/backend/public/system
+
+# テストカバレッジや一時ファイル
+/backend/coverage/
+/backend/spec/tmp
+/backend/*.orig
+/backend/rerun.txt
+/backend/pickle-email-*.html
+
+# バンドラ・Ruby 環境
+/backend/.bundle
+/backend/vendor/bundle
+/backend/.rvmrc
+/backend/.byebug_history
+
+# Secrets / Credentials
+# master.key はコミットしない（本番は環境変数やSecret管理で供給）
+/backend/config/master.key
+# Rails 旧式の secret_token.rb を使っている場合は無視（現行は credentials 推奨）
+/backend/config/initializers/secret_token.rb
+
+# dotenv（バックエンド）
+/backend/.env
+/backend/.env*.local
+!/backend/.env.example
+# .env.erb はテンプレートなのでコミット対象（設定値は環境で）
+!/backend/.env*.erb
+
+# ---------------------------
+# React (frontend)
+# ---------------------------
+/frontend/node_modules
+/frontend/dist
+/frontend/dist-ssr
+/frontend/.DS_Store
+
+# ログ
+/frontend/logs
+/frontend/*.log
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+/frontend/pnpm-debug.log*
+/frontend/lerna-debug.log*
+
+# フロントの環境ファイル（テンプレートはコミット推奨）
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.*.local
+!/frontend/.env.example
+
+# Vite / Webpack 等のキャッシュ
+/frontend/.cache
+/frontend/.vite
+
+# エディタ・IDE
+/frontend/.vscode/*
+!/frontend/.vscode/extensions.json
+!/frontend/.vscode/settings.json
+
+# ---------------------------
+# Uploads (ルートで集約する場合)
+# ---------------------------
+/public/uploads
+
+# ---------------------------
+# 共有 Keep ファイル
+# ---------------------------
+# 必要な空ディレクトリ維持用
+!/log/.keep
+!/tmp/.keep
+!/
