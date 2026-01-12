@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_01_11_161703) do
+ActiveRecord::Schema.define(version: 2026_01_12_150553) do
 
   create_table "batter_abilities", force: :cascade do |t|
     t.integer "player_season_id"
@@ -21,14 +21,6 @@ ActiveRecord::Schema.define(version: 2026_01_11_161703) do
     t.integer "arm_strength", limit: 3, default: 0
     t.integer "fielding", limit: 3, default: 0
     t.integer "catching", limit: 3, default: 0
-    t.string "clutch", limit: 1
-    t.string "vs_lhp", limit: 1
-    t.string "stearing", limit: 1
-    t.string "runnning", limit: 1
-    t.string "throwing", limit: 1
-    t.string "catcher", limit: 1
-    t.string "grit", limit: 1
-    t.string "recovery", limit: 1
     t.string "special_ability", limit: 255
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
@@ -79,13 +71,6 @@ ActiveRecord::Schema.define(version: 2026_01_11_161703) do
     t.integer "pitch_velocity", limit: 3, default: 120
     t.integer "control", limit: 3, default: 0
     t.integer "stamina", limit: 3, default: 0
-    t.string "w_risp", limit: 1
-    t.string "heather", limit: 1
-    t.string "vs_lbh", limit: 1
-    t.string "agile", limit: 1
-    t.string "poise", limit: 1
-    t.string "grit", limit: 1
-    t.string "recovery", limit: 1
     t.string "special_ability", limit: 255
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
