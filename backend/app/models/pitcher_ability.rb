@@ -1,6 +1,5 @@
 class PitcherAbility < ApplicationRecord
-      # RANKS = { G: 0, F: 1, E: 2, D: 3, C: 4, B: 5, A: 6, S: 7 }.freeze      
-      RANKS = { g: 0, f: 1, e: 2, d: 3, c: 4, b: 5, a: 6, s: 7 }.freeze
+      RANKS = { G: 0, F: 1, E: 2, D: 3, C: 4, B: 5, A: 6, S: 7 }.freeze      
 
       # バリデーション
       validates :pitch_velocity, inclusion: 0..180, allow_nil: true
