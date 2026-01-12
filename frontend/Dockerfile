@@ -1,5 +1,5 @@
 # ベースイメージを指定
-FROM node:16
+FROM node:20-slim
 
 # 作業ディレクトリを設定
 WORKDIR /app
@@ -7,8 +7,8 @@ WORKDIR /app
 # package.json と package-lock.json をコピー
 COPY package.json package-lock.json ./
 
-# 依存関係をインストール
-RUN npm install
+# 再現性のため npm ci（ロックファイルに忠実）
+RUN npm ci
 
 # アプリケーションのソースコードをコピー
 COPY . .
