@@ -118,8 +118,8 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
         <TextField
           select
           label="ノビ"
-          name="heather"
-          value={formData.heather}
+          name="heatherRank"
+          value={formData.heatherRank}
           onChange={handleChange}
           fullWidth
         >

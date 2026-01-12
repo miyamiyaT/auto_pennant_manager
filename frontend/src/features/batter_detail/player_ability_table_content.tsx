@@ -202,9 +202,9 @@ const columns: GridColDef[] = [
     renderCell: (player) => {
       return player.row.batter_ability ?
     <div>
-      <div>好機:{player.row.batter_ability.clutch}</div>
-      <div>対左:{player.row.batter_ability.vs_lhp}</div>
-      <div>回復:{player.row.batter_ability.recovery}</div>
+      <div>好機:{player.row.batter_ability.clutch_rank}</div>
+      <div>対左:{player.row.batter_ability.vs_lhp_rank}</div>
+      <div>回復:{player.row.batter_ability.recovery_rank}</div>
     </div>
        : '-'
      },
@@ -218,9 +218,9 @@ const columns: GridColDef[] = [
     renderCell: (player) => {
       return player.row.batter_ability ?
     <div>
-      <div>盗塁:{player.row.batter_ability.stearing}</div>
-      <div>走塁:{player.row.batter_ability.runnning}</div>
-      <div>怪我:{player.row.batter_ability.grit}</div>
+      <div>盗塁:{player.row.batter_ability.stealing_rank}</div>
+      <div>走塁:{player.row.batter_ability.running_rank}</div>
+      <div>怪我:{player.row.batter_ability.grit_rank}</div>
     </div>
        : '-'
      },
@@ -234,8 +234,8 @@ const columns: GridColDef[] = [
     renderCell: (player) => {
       return player.row.batter_ability ?
     <div>
-      <div>送球:{player.row.batter_ability.throwing}</div>
-      <div>捕手:{player.row.batter_ability.catcher}</div>
+      <div>送球:{player.row.batter_ability.throwing_rank}</div>
+      <div>捕手:{player.row.batter_ability.catcher_rank}</div>
     </div>
        : '-'
      },

@@ -99,8 +99,8 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
         <TextField
           select
           label="チャンス"
-          name="clutch"
-          value={formData.clutch ? formData.clutch : "D"}
+          name="clutchRank"
+          value={formData.clutchRank ? formData.clutchRank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -115,8 +115,8 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
         <TextField
           select
           label="対左"
-          name="vsLhp"
-          value={formData.vsLhp ? formData.vsLhp : "D"}
+          name="vsLhpRank"
+          value={formData.vsLhpRank ? formData.vsLhpRank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -131,8 +131,8 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
         <TextField
           select
           label="キャッチャー"
-          name="catcher_skill"
-          value={formData.catcher_skill}
+          name="catcherRank"
+          value={formData.catcherRank ? formData.catcherRank : null}
           onChange={handleChange}
           fullWidth
         >
@@ -147,8 +147,8 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
         <TextField
           select
           label="怪我しにくさ"
-          name="grit"
-          value={formData.grit ? formData.grit : "D"}
+          name="gritRank"
+          value={formData.gritRank ? formData.gritRank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -163,8 +163,8 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
         <TextField
           select
           label="盗塁"
-          name="stealing"
-          value={formData.stealing ? formData.stealing : "D"}
+          name="stealingRank"
+          value={formData.stealingRank ? formData.stealingRank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -179,8 +179,8 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
         <TextField
           select
           label="走塁"
-          name="running"
-          value={formData.running ? formData.running : "D"}
+          name="runningRank"
+          value={formData.runningRank ? formData.runningRank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -195,8 +195,8 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
         <TextField
           select
           label="送球"
-          name="throwing"
-          value={formData.throwing ? formData.throwing : "D"}
+          name="throwingRank"
+          value={formData.throwingRank ? formData.throwingRank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -211,8 +211,8 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
         <TextField
           select
           label="回復"
-          name="recovery"
-          value={formData.recovery ? formData.recovery : "D"}
+          name="recoveryRank"
+          value={formData.recoveryRank ? formData.recoveryRank : "D"}
           onChange={handleChange}
           fullWidth
         >
