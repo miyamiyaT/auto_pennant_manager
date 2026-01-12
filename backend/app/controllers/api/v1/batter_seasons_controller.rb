@@ -106,8 +106,9 @@ class Api::V1::BatterSeasonsController < ApplicationController
   def batter_ability_params
     params.require(:batter_ability)
           .permit(:trajectory, :hit, :power, :run_speed, :arm_strength,
-                  :fielding, :catching, :grit, :clutch, :vs_lhp, :stearing, 
-                  :runnning, :throwing, :catcher, :grit, :recovery, :special_ability
+                  :fielding, :catching, :grit, :clutch_rank, :vs_lhp_rank, :stealing_rank, 
+                  :running_rank, :throwing_rank, :catcher_rank, :grit_rank, :recovery_rank, 
+                  :special_ability
                   )
   end
 end

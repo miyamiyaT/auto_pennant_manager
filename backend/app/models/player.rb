@@ -24,7 +24,7 @@ class Player < ApplicationRecord
                       .group('players.id')
                       .order('players.birthday ASC')
                       .order('season_count DESC')
-                      .includes(player_season: [:batter_season, :pitcher_season])    
+                      .includes(player_season: [:batter_seasons, :pitcher_seasons])    
 
     player_list.map do |player|
       {
@@ -39,8 +39,8 @@ class Player < ApplicationRecord
         draft_rank: player.draft_rank,
         memo: player.memo,
         season_count: player.player_season.size,
-        is_batter: player.player_season.any? { |season| season.batter_season.present? },
-        is_pitcher: player.player_season.any? { |season| season.pitcher_season.present? }
+        is_batter: player.player_season.any? { |season| season.batter_seasons.present? },
+        is_pitcher: player.player_season.any? { |season| season.pitcher_seasons.present? }
       }
     end
   end
@@ -48,7 +48,7 @@ class Player < ApplicationRecord
   def self.get_season_item(id, year, position_conditions)
 
     player_list = self.where(team_id: id, deleted_at: nil)
-                      .includes(player_season: [:batter_season, :pitcher_season])
+                      .includes(player_season: [:batter_seasons, :pitcher_seasons])
                       .where(player_season: { year: year },)
                       .order('player_season.age DESC')
 
@@ -62,8 +62,8 @@ class Player < ApplicationRecord
 
     player_list.map do |player|
       player_season = player.player_season.first
-      batter_season = player_season ? player_season.batter_season.first : nil
-      pitcher_season = player_season ? player_season.pitcher_season.first : nil
+      batter_season = player_season ? player_season.batter_seasons.first : nil
+      pitcher_season = player_season ? player_season.pitcher_seasons.first : nil
 
       {
         id: player.id,
@@ -78,15 +78,15 @@ class Player < ApplicationRecord
 
   def self.get_batter_item(id)
   player_list = self.where(id: id, deleted_at: nil)
-                    .includes(player_season: [:batter_season, :batter_ability])
+                    .includes(player_season: [:batter_seasons, :batter_abilities])
                     .order('player_seasons.year DESC')
 
   player_list.map do |player|
     player_seasons = player.player_season
 
     player_season_data = player_seasons.map do |player_season|
-      batter_season = player_season ? player_season.batter_season.first : nil
-      batter_ability = player_season ? player_season.batter_ability.first : nil
+      batter_season = player_season ? player_season.batter_seasons.first : nil
+      batter_ability = player_season ? player_season.batter_abilities.first : nil
 
       {
         id: player_season.id,
@@ -126,7 +126,7 @@ class Player < ApplicationRecord
   
   def self.get_batter_last_item(id)
     player_list = self.where(id: id, deleted_at: nil)
-                      .includes(player_season: [:batter_season, :batter_ability])
+                      .includes(player_season: [:batter_seasons, :batter_abilities])
                       .order('player_seasons.year DESC')
   
     player_list.map do |player|
@@ -134,8 +134,8 @@ class Player < ApplicationRecord
       latest_player_season = player.player_season.order(year: :desc).first
   
       if latest_player_season
-        batter_season = latest_player_season.batter_season.first
-        batter_ability = latest_player_season.batter_ability.first
+        batter_season = latest_player_season.batter_seasons.first
+        batter_ability = latest_player_season.batter_abilities.first
   
         player_season_data = {
           year: latest_player_season.year,
@@ -171,16 +171,16 @@ class Player < ApplicationRecord
   # 投球関連
   def self.get_pitcher_item(id)
     player_list = self.where(id: id, deleted_at: nil)
-                      .includes(player_season: [:pitcher_season, :pitcher_ability, :breaking_ball])
+                      .includes(player_season: [:pitcher_seasons, :pitcher_abilities, :breaking_balls])
                       .order('player_seasons.year DESC')
   
     player_list.map do |player|
       player_seasons = player.player_season
   
       player_season_data = player_seasons.map do |player_season|
-        pitcher_season = player_season ? player_season.pitcher_season.first : nil
-        pitcher_ability = player_season ? player_season.pitcher_ability.first : nil
-        breaking_ball = player_season ? player_season.breaking_ball : nil
+        pitcher_season = player_season ? player_season.pitcher_seasons.first : nil
+        pitcher_ability = player_season ? player_season.pitcher_abilities.first : nil
+        breaking_ball = player_season ? player_season.breaking_balls : nil
   
         {
           id: player_season.id,
@@ -222,7 +222,7 @@ class Player < ApplicationRecord
     def self.get_pitcher_last_item(id)
       
       player_list = self.where(id: id, deleted_at: nil)
-                        .includes(player_season: [:pitcher_season, :pitcher_ability, :breaking_ball])
+                        .includes(player_season: [:pitcher_seasons, :pitcher_abilities, :breaking_balls])
                         .order('player_seasons.year DESC')
 
       player_list.map do |player|
@@ -230,9 +230,9 @@ class Player < ApplicationRecord
       latest_player_season = player.player_season.order(year: :desc).first
 
       if latest_player_season
-        pitcher_season = latest_player_season.pitcher_season.first
-        pitcher_ability = latest_player_season.pitcher_ability.first
-        breaking_ball = latest_player_season.breaking_ball
+        pitcher_season = latest_player_season.pitcher_seasons.first
+        pitcher_ability = latest_player_season.pitcher_abilities.first
+        breaking_ball = latest_player_season.breaking_balls
 
         player_season_data = {
           id: latest_player_season.id,

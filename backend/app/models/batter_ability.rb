@@ -1,5 +1,7 @@
 class BatterAbility < ApplicationRecord
+    # RANKS = { G: 0, F: 1, E: 2, D: 3, C: 4, B: 5, A: 6, S: 7 }.freeze      
     RANKS = { g: 0, f: 1, e: 2, d: 3, c: 4, b: 5, a: 6, s: 7 }.freeze
+
 
     # バリデーション
     validates :trajectory, presence: true, inclusion: 0..4
@@ -19,16 +21,14 @@ class BatterAbility < ApplicationRecord
     validates :recovery, inclusion: { in: ['G','F','E','D','C','B','A','S'], allow_blank: true }
     validates :clutch_rank, :vs_lhp_rank, :stealing_rank, :running_rank, :throwing_rank, :grit_rank, :recovery_rank, presence: true
 
-    enum clutch_rank:   RANKS
-    enum vs_lhp_rank:   RANKS
-    enum stealing_rank: RANKS
-    enum running_rank:  RANKS
-    enum throwing_rank: RANKS
-    enum catcher_rank:  RANKS
-    enum grit_rank:     RANKS
-    enum recovery_rank: RANKS
-
-
+    enum clutch_rank:   RANKS, _prefix: true
+    enum vs_lhp_rank:   RANKS, _prefix: true
+    enum stealing_rank: RANKS, _prefix: true
+    enum running_rank:  RANKS, _prefix: true
+    enum throwing_rank: RANKS, _prefix: true
+    enum catcher_rank:  RANKS, _prefix: true
+    enum grit_rank:     RANKS, _prefix: true
+    enum recovery_rank: RANKS, _prefix: true
 
     # アソシエーション
     belongs_to :player_season

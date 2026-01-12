@@ -108,13 +108,13 @@ const columns: GridColDef[] = [
     field: "batting_ability1",
     headerName: "特能1",
     width: 75,
-    valueGetter: (player,row) => { return row.pitcher_ability ? row.pitcher_ability.w_risp : 0 },
+    valueGetter: (player,row) => { return row.pitcher_ability ? row.pitcher_ability.w_risp_rank : 3 },
     renderCell: (player) => {
       return player.row.pitcher_ability ?
     <div>
-      <div>対ピ:{player.row.pitcher_ability.w_risp}</div>
-      <div>ノビ:{player.row.pitcher_ability.heather}</div>
-      <div>対左:{player.row.pitcher_ability.vs_lbh}</div>
+      <div>対ピ:{player.row.pitcher_ability.w_risp_rank}</div>
+      <div>ノビ:{player.row.pitcher_ability.heather_rank}</div>
+      <div>対左:{player.row.pitcher_ability.vs_lbh_rank}</div>
     </div>
        : '-'
      },
@@ -124,12 +124,12 @@ const columns: GridColDef[] = [
     field: "batting_ability2",
     headerName: "特能2",
     width: 75,
-    valueGetter: (player,row) => { return row.pitcher_ability ? row.pitcher_ability.w_risp : 0 },
+    valueGetter: (player,row) => { return row.pitcher_ability ? row.pitcher_ability.w_risp_rank : 3 },
     renderCell: (player) => {
       return player.row.pitcher_ability ?
     <div>
-      <div>クイ:{player.row.pitcher_ability.agile}</div>
-      <div>打た:{player.row.pitcher_ability.poise}</div>
+      <div>クイ:{player.row.pitcher_ability.agile_rank}</div>
+      <div>打た:{player.row.pitcher_ability.poise_rank}</div>
     </div>
        : '-'
      },
@@ -139,12 +139,12 @@ const columns: GridColDef[] = [
     field: "batting_ability3",
     headerName: "特能3",
     width: 75,
-    valueGetter: (player,row) => { return row.pitcher_ability ? row.pitcher_ability.w_risp : 0 },
+    valueGetter: (player,row) => { return row.pitcher_ability ? row.pitcher_ability.w_risp_rank : 3 },
     renderCell: (player) => {
       return player.row.pitcher_ability ?
     <div>
-      <div>ケガ:{player.row.pitcher_ability.grit}</div>
-      <div>回復:{player.row.pitcher_ability.recovery}</div>
+      <div>ケガ:{player.row.pitcher_ability.grit_rank}</div>
+      <div>回復:{player.row.pitcher_ability.recovery_rank}</div>
     </div>
        : '-'
      },
