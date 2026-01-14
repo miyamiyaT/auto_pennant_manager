@@ -9,14 +9,6 @@ class BatterAbility < ApplicationRecord
     validates :arm_strength, presence: true, inclusion: 0..100
     validates :fielding, presence: true, inclusion: 0..100
     validates :catching, presence: true, inclusion: 0..100
-    validates :clutch, inclusion: { in: ['G','F','E','D','C','B','A','S'], allow_blank: true }
-    validates :vs_lhp, inclusion: { in: ['G','F','E','D','C','B','A','S'], allow_blank: true }
-    validates :stearing, inclusion: { in: ['G','F','E','D','C','B','A','S'], allow_blank: true}
-    validates :runnning, inclusion: { in: ['G','F','E','D','C','B','A','S'], allow_blank: true}
-    validates :throwing, inclusion: { in: ['G','F','E','D','C','B','A','S'], allow_blank: true }
-    validates :catcher, inclusion: { in: ['G','F','E','D','C','B','A','S'], allow_blank: true}
-    validates :grit, inclusion: { in: ['G','F','E','D','C','B','A','S'], allow_blank: true}
-    validates :recovery, inclusion: { in: ['G','F','E','D','C','B','A','S'], allow_blank: true }
     validates :clutch_rank, :vs_lhp_rank, :stealing_rank, :running_rank, :throwing_rank, :grit_rank, :recovery_rank, presence: true
 
     enum clutch_rank:   RANKS, _prefix: true

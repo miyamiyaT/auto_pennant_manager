@@ -2,9 +2,9 @@ Faker::Config.locale = 'ja'
 
 FactoryBot.define do
   factory :player_season do
-    year { year }
-    age { nil }
-    number { number.to_s }
+    year { 2026 }
+    age { 26 }
+    number { 000.to_s }
     growth_type { Faker::Number.between(from: 0, to: 4) }
     current_growth_type { Faker::Number.between(from: 0, to: 3) }
     is_starter { [true, false].sample }
@@ -20,11 +20,5 @@ FactoryBot.define do
     memo { Faker::Movie.title }
 
     association :player, factory: :player
-
-    after(:build) do |player_season|
-      player = player_season.player
-      age = player_season.year - player.birthday.year
-      player_season.age = age
-    end
   end
 end
