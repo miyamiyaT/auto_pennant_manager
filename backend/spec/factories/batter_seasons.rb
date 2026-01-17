@@ -56,5 +56,7 @@ FactoryBot.define do
       ops = slg + oba
       batter_season.ops = ops
     end
+
+    association :player_season, factory: :player_season
   end
 end

@@ -9,14 +9,16 @@ FactoryBot.define do
     arm_strength { Faker::Number.between(from: 1, to: 100) }
     fielding { Faker::Number.between(from: 1, to: 100) }
     catching { Faker::Number.between(from: 1, to: 100) }
-    clutch { GRADES.sample }
-    vs_lhp { GRADES.sample }
-    stearing { GRADES.sample }
-    runnning { GRADES.sample }
-    throwing { GRADES.sample }
-    catcher { GRADES.sample }
-    grit { GRADES.sample }
-    recovery { GRADES.sample }
+    clutch_rank { GRADES.sample }
+    vs_lhp_rank { GRADES.sample }
+    stealing_rank { GRADES.sample }
+    running_rank { GRADES.sample }
+    throwing_rank { GRADES.sample }
+    catcher_rank { GRADES.sample }
+    grit_rank { GRADES.sample }
+    recovery_rank { GRADES.sample }
     special_ability { Faker::Creature::Animal.name[0, 100] }
+
+    association :player_season, factory: :player_season
   end
 end
