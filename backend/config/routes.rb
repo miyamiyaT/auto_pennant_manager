@@ -6,8 +6,10 @@ Rails.application.routes.draw do
       resources :team_seasons
       resources :players
       resources :batters
-      resources :pitchers
+      get 'batters/:id/register', to: 'batters#register'
 
+      resources :pitchers
+      get 'pitchers/:id/register', to: 'pitchers#register'
 
       resources :batter_seasons
       get 'batter_seasons/:id/years', to: 'batter_seasons#years'

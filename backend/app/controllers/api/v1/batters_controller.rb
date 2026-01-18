@@ -3,12 +3,17 @@ class Api::V1::BattersController < ApplicationController
   end
 
   def show
-    if params[:type]
-      player = Player.get_batter_last_item(params[:id])
-    else
-      player = Player.get_batter_item(params[:id])
-    end
-    render status: :ok, json:{player: player}
+    player = Batters::AllBatterSeasonByPlayerQuery.new(player_id: params[:id]).call
+
+    render status: :ok, json: AllBatterSeasonSerializer.new(player).serialize
+    # render status: :ok, json: player
+  end
+
+  def register
+    # 登録時に昨シーズンの成績を取得する。
+    player = Batters::LatestBatterSeasonByPlayerQuery.new(player_id: params[:id]).call
+
+    render status: :ok, json: player
   end
 
   def create

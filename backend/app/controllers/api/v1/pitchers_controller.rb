@@ -4,6 +4,7 @@ class Api::V1::PitchersController < ApplicationController
 
   def show
     if params[:type]
+      # 成績登録時に昨年のデータを取得する。
       player = Player.get_pitcher_last_item(params[:id])
     else
       player = Player.get_pitcher_item(params[:id])
