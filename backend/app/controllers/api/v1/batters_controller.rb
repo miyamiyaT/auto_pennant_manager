@@ -1,61 +1,32 @@
 class Api::V1::BattersController < ApplicationController
-  def index
-  end
-
   def show
     player = Batters::AllBatterSeasonByPlayerQuery.new(player_id: params[:id]).call
 
     render status: :ok, json: AllBatterSeasonSerializer.new(player).serialize
-    # render status: :ok, json: player
   end
 
   def register
     # 登録時に昨シーズンの成績を取得する。
     player = Batters::LatestBatterSeasonByPlayerQuery.new(player_id: params[:id]).call
 
-    render status: :ok, json: player
+    render status: :ok, json: LatestBatterSeasonSerializer.new(player).serialize
   end
 
   def create
     # 野手登録
-    ActiveRecord::Base.transaction do
-      # シーズン記録の存在確認および新規作成
-      player = Player.find(player_params[:id])
-      player.update(player_params)
+    result = Batters::CreateBatterSeasonUseCase.new(
+      player_params: player_params,
+      player_season_params: player_season_params,
+      batter_season_params: batter_season_params,
+      batter_ability_params: batter_ability_params
+    )
 
-      player_season = PlayerSeason.find_or_create_by(player_id: player.id, year:  player_season_params[:year])
-      player_season.assign_attributes(player_season_params)
-      player_season.save!
-
-      batter_season = BatterSeason.find_or_create_by(player_season_id: player_season.id)
-      batter_season.assign_attributes(batter_season_params)
-      batter_season.save!
-
-      batter_ability = BatterAbility.find_or_create_by(player_season_id: player_season.id)
-      batter_ability.assign_attributes(batter_ability_params)
-      batter_ability.save!
-
-      render json: player_season, status: :created
-    rescue ActiveRecord::RecordInvalid => e
-      render json: { error: e.message }, status: :unprocessable_entity
-    end
-  end
-
-  def update
+    render json: result, status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   private
-
-  def calculate_age(birthday, year)
-    return nil if birthday.blank? || year.blank?
-
-    birth_date = Date.parse(birthday)
-    current_year = Time.current.year
-    
-    age = current_year - birth_date.year
-    age -= 1 if Time.current < Date.new(current_year, Date.parse(birthday).month, Date.parse(birthday).day)
-    age
-  end
 
   def player_params()
     params.require(:player)
