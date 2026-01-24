@@ -6,10 +6,14 @@ class Player < ApplicationRecord
   validates :birthday, presence: true, format: { with: /\A\d{4}-\d{2}-\d{2}\z/ }
   validates :memo, presence: false
   validates :deleted_at, absence: true
+  validates :draft_year, allow_nil: true, inclusion: 2000..9999
+  validates :draft_rank, allow_nil: true, inclusion: 1..12
+
+  enum draft_type: { high_school: 0, university: 1, independent_league: 2, corporate: 3, other: 4 }
 
   # アソシエーション
   belongs_to :team
-  has_many :player_season, dependent: :destroy
+  has_many :player_seasons, dependent: :destroy
 
   # 削除
   def delete_item
@@ -19,12 +23,12 @@ class Player < ApplicationRecord
   # 現役選手一覧取得
   def self.get_all_team_items(id, is_active)
     player_list = self.where(team_id: id, is_active: is_active, deleted_at: nil)
-                      .left_joins(:player_season)
+                      .left_joins(:player_seasons)
                       .select('players.*, COUNT(player_seasons.id) AS season_count')
                       .group('players.id')
                       .order('players.birthday ASC')
                       .order('season_count DESC')
-                      .includes(player_season: [:batter_seasons, :pitcher_seasons])    
+                      .includes(player_seasons: [:batter_seasons, :pitcher_seasons])    
 
     player_list.map do |player|
       {
@@ -38,9 +42,9 @@ class Player < ApplicationRecord
         draft_type: player.draft_type,
         draft_rank: player.draft_rank,
         memo: player.memo,
-        season_count: player.player_season.size,
-        is_batter: player.player_season.any? { |season| season.batter_seasons.present? },
-        is_pitcher: player.player_season.any? { |season| season.pitcher_seasons.present? }
+        season_count: player.player_seasons.size,
+        is_batter: player.player_seasons.any? { |season| season.batter_seasons.present? },
+        is_pitcher: player.player_seasons.any? { |season| season.pitcher_seasons.present? }
       }
     end
   end
@@ -48,9 +52,9 @@ class Player < ApplicationRecord
   def self.get_season_item(id, year, position_conditions)
 
     player_list = self.where(team_id: id, deleted_at: nil)
-                      .includes(player_season: [:batter_seasons, :pitcher_seasons])
-                      .where(player_season: { year: year },)
-                      .order('player_season.age DESC')
+                      .includes(player_seasons: [:batter_seasons, :pitcher_seasons])
+                      .where(player_seasons: { year: year },)
+                      .order('player_seasons.age DESC')
 
     # フィルタリング
     if position_conditions.present?
@@ -61,7 +65,7 @@ class Player < ApplicationRecord
 
 
     player_list.map do |player|
-      player_season = player.player_season.first
+      player_season = player.player_seasons.first
       batter_season = player_season ? player_season.batter_seasons.first : nil
       pitcher_season = player_season ? player_season.pitcher_seasons.first : nil
 
@@ -78,11 +82,11 @@ class Player < ApplicationRecord
 
   def self.get_batter_item(id)
   player_list = self.where(id: id, deleted_at: nil)
-                    .includes(player_season: [:batter_seasons, :batter_abilities])
+                    .includes(player_seasons: [:batter_seasons, :batter_abilities])
                     .order('player_seasons.year DESC')
 
   player_list.map do |player|
-    player_seasons = player.player_season
+    player_seasons = player.player_seasons
 
     player_season_data = player_seasons.map do |player_season|
       batter_season = player_season ? player_season.batter_seasons.first : nil
@@ -126,12 +130,12 @@ class Player < ApplicationRecord
   
   def self.get_batter_last_item(id)
     player_list = self.where(id: id, deleted_at: nil)
-                      .includes(player_season: [:batter_seasons, :batter_abilities])
+                      .includes(player_seasons: [:batter_seasons, :batter_abilities])
                       .order('player_seasons.year DESC')
   
     player_list.map do |player|
       # player_seasonsを年度の降順でソートし、最初のレコードだけを取得
-      latest_player_season = player.player_season.order(year: :desc).first
+      latest_player_season = player.player_seasons.order(year: :desc).first
   
       if latest_player_season
         batter_season = latest_player_season.batter_seasons.first
@@ -171,11 +175,11 @@ class Player < ApplicationRecord
   # 投球関連
   def self.get_pitcher_item(id)
     player_list = self.where(id: id, deleted_at: nil)
-                      .includes(player_season: [:pitcher_seasons, :pitcher_abilities, :breaking_balls])
+                      .includes(player_seasons: [:pitcher_seasons, :pitcher_abilities, :breaking_balls])
                       .order('player_seasons.year DESC')
   
     player_list.map do |player|
-      player_seasons = player.player_season
+      player_seasons = player.player_seasons
   
       player_season_data = player_seasons.map do |player_season|
         pitcher_season = player_season ? player_season.pitcher_seasons.first : nil
@@ -222,12 +226,12 @@ class Player < ApplicationRecord
     def self.get_pitcher_last_item(id)
       
       player_list = self.where(id: id, deleted_at: nil)
-                        .includes(player_season: [:pitcher_seasons, :pitcher_abilities, :breaking_balls])
+                        .includes(player_seasons: [:pitcher_seasons, :pitcher_abilities, :breaking_balls])
                         .order('player_seasons.year DESC')
 
       player_list.map do |player|
       # player_seasonsを年度の降順でソートし、最初のレコードだけを取得
-      latest_player_season = player.player_season.order(year: :desc).first
+      latest_player_season = player.player_seasons.order(year: :desc).first
 
       if latest_player_season
         pitcher_season = latest_player_season.pitcher_seasons.first
@@ -270,9 +274,9 @@ class Player < ApplicationRecord
   # 詳細取得
   def self.get_year_item(id)
     player_list = self.where(team_id: id, deleted_at: nil)
-                      .includes(:player_season)
+                      .includes(:player_seasons)
 
-    all_years = player_list.flat_map { |player| player.player_season.map(&:year) }
+    all_years = player_list.flat_map { |player| player.player_seasons.map(&:year) }
                            .uniq
                            .map(&:to_i)                    # 文字列から整数に変換（整数でソートするため）
                            .sort.reverse                  # 昇順にソートし、反転して最新順にする

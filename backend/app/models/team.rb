@@ -7,7 +7,7 @@ class Team < ApplicationRecord
   validates :deleted_at, absence: true
 
   # アソシエーション
-  has_many :player, dependent: :destroy
+  has_many :players, dependent: :destroy
 
   # 削除
   def delete_item
@@ -21,7 +21,10 @@ class Team < ApplicationRecord
 
   # 歴代シーズン一覧
   def self.get_all_years(id)
-    find_by(id: id, deleted_at: nil).player.joins(:player_season).pluck('player_seasons.year').uniq
+    joins(players: :player_seasons)
+      .where(players: { team_id: id, deleted_at: nil })
+      .distinct
+      .pluck('player_seasons.year')
   end
 
   # 詳細取得

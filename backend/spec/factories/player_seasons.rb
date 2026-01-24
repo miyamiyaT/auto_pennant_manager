@@ -5,8 +5,8 @@ FactoryBot.define do
     year { 2026 }
     age { 26 }
     number { 000.to_s }
-    growth_type { Faker::Number.between(from: 0, to: 4) }
-    current_growth_type { Faker::Number.between(from: 0, to: 3) }
+    growth_type { :normal }
+    current_growth_type { :prime }
     is_starter { [true, false].sample }
     is_relief { [true, false].sample }
     is_closer { [true, false].sample }
