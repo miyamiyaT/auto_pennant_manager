@@ -19,14 +19,6 @@ class Team < ApplicationRecord
     where(deleted_at: nil)
   end
 
-  # 歴代シーズン一覧
-  def self.get_all_years(id)
-    joins(players: :player_seasons)
-      .where(players: { team_id: id, deleted_at: nil })
-      .distinct
-      .pluck('player_seasons.year')
-  end
-
   # 詳細取得
   def self.get_item(id)
     find_by(id: id, deleted_at: nil)
