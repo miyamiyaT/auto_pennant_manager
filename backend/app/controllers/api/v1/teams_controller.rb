@@ -5,17 +5,14 @@ class Api::V1::TeamsController < ApplicationController
   end
 
   def show
-    team = Team.get_item(params[:id])
-    year = Player.get_year_item(params[:id])
-    active_players = Player.get_all_team_items(params[:id], true)
-    retire_players = Player.get_all_team_items(params[:id], false)
-    season_list = Team.get_all_years(params[:id])
+    data = {
+      team: Team.get_item(params[:id]),
+      active_players: Players::ActivePlayerByTeamQuery.new(team_id: params[:id]).call,
+      retire_players: Players::RetirePlayerByTeamQuery.new(team_id: params[:id]).call,
+      season_list: Teams::AllSeasonByTeamQuery.new(team_id: params[:id]).call
+    }
 
-    render status: :ok, json:{team: team, 
-                              year: year,
-                              active_players: active_players,
-                              retire_players: retire_players,
-                              season_list: season_list}
+    render status: :ok, json: TeamPlayerSerializer.new(data).serialize
   end
 
 
