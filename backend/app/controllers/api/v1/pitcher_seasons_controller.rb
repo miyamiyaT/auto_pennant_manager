@@ -6,33 +6,14 @@ class Api::V1::PitcherSeasonsController < ApplicationController
   end
 
   def show
-    id = params[:id]
-    year = params[:year]
-    position_array = params[:positions].to_s.split(',').map(&:strip)
+    position_conditions = Players::PitcherPositionQuery.new(params[:positions]).call
+    pitcher_season = Players::SeasonPlayerByTeamYearPositionQuery.new(
+      team_id: params[:id],
+      year: params[:year], 
+      position_conditions: position_conditions
+    ).call
 
-    # フィルタリング条件を生成
-    position_conditions = []
-    position_array.each do |position|
-      case position.downcase
-      when 'starter'
-        position_conditions << :is_starter
-      when 'relief'
-        position_conditions << :is_relief
-      when 'closer'
-        position_conditions << :is_closer
-      end
-    end
-
-    # positionsが指定されていない場合、どれか一つでもtrueのものを取得
-    if position_conditions.empty?
-      position_conditions = [
-        :is_starter, :is_relief, :is_closer
-      ]
-    end
-
-    pitcher_season = Player.get_season_item(id, year, position_conditions)
-
-    render status: :ok, json:{players: pitcher_season}
+    render status: :ok, json: PitcherSeasonResponseSerializer.new(pitcher_season).serialize
   end
 
   def create
@@ -64,17 +45,6 @@ class Api::V1::PitcherSeasonsController < ApplicationController
   end
 
   private
-
-  def calculate_age(birthday, year)
-    return nil if birthday.blank? || year.blank?
-
-    birth_date = Date.parse(birthday)
-    current_year = Time.current.year
-    
-    age = current_year - birth_date.year
-    age -= 1 if Time.current < Date.new(current_year, Date.parse(birthday).month, Date.parse(birthday).day)
-    age
-  end
 
   def player_params()
     params.require(:player)
