@@ -38,17 +38,6 @@ class Api::V1::PlayersController < ApplicationController
 
   private
 
-  def calculate_age(birthday, year)
-    return nil if birthday.blank? || year.blank?
-
-    birth_date = Date.parse(birthday)
-    current_year = Time.current.year
-    
-    age = current_year - birth_date.year
-    age -= 1 if Time.current < Date.new(current_year, Date.parse(birthday).month, Date.parse(birthday).day)
-    age
-  end
-
   def player_params()
     params.require(:player)
           .permit(:team_id, :birthday, :name, :memo ,:is_favorite, :roy, 
