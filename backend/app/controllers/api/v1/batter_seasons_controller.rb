@@ -6,39 +6,15 @@ class Api::V1::BatterSeasonsController < ApplicationController
   end
 
   def show
-    id = params[:id]
-    year = params[:year]
-    position_array = params[:positions].to_s.split(',').map(&:strip)
+    position_conditions = Players::BatterPositionQuery.new(params[:positions]).call
+    # batter_season = Player.get_season_item(params[:id], params[:year], position_conditions)
+    batter_season = Players::SeasonPlayerByTeamYearPositionQuery.new(
+        team_id: params[:id], 
+        year: params[:year], 
+        position_conditions: position_conditions
+      ).call
 
-    # フィルタリング条件を生成
-    position_conditions = []
-    position_array.each do |position|
-      case position.downcase
-      when 'catcher'
-        position_conditions << :is_catcher
-      when 'first'
-        position_conditions << :is_first
-      when 'second'
-        position_conditions << :is_second
-      when 'third'
-        position_conditions << :is_third
-      when 'short'
-        position_conditions << :is_short
-      when 'outfield'
-        position_conditions << :is_outfielder
-      end
-    end
-
-    # positionsが指定されていない場合、どれか一つでもtrueのものを取得
-    if position_conditions.empty?
-      position_conditions = [
-        :is_catcher,:is_first, :is_second, :is_third, :is_short, :is_outfielder
-      ]
-    end
-
-    batter_season = Player.get_season_item(id, year, position_conditions)
-
-    render status: :ok, json:{players: batter_season}
+    render status: :ok, json: BatterSeasonResponseSerializer.new(batter_season).serialize
   end
 
   def create

@@ -13,8 +13,6 @@ RSpec.describe 'Api::V1::Teams', type: :request do
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
 
-      pp response.body
-
       expect(json).to include("team", "active_players", "retire_players", "season_list")
     end
   end
