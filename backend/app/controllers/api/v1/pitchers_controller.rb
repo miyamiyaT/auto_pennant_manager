@@ -3,46 +3,31 @@ class Api::V1::PitchersController < ApplicationController
   end
 
   def show
-    if params[:type]
-      # 成績登録時に昨年のデータを取得する。
-      player = Player.get_pitcher_last_item(params[:id])
-    else
-      player = Player.get_pitcher_item(params[:id])
-    end
-    render status: :ok, json:{player: player}
+    player = Pitchers::AllPitcherSeasonByPlayerQuery.new(player_id: params[:id]).call
+
+    render status: :ok, json: AllPitcherSeasonSerializer.new(player).serialize
   end
 
+  def register
+    # 登録時に昨シーズンの成績を取得する。
+    player = Pitchers::LatestPitcherSeasonByPlayerQuery.new(player_id: params[:id]).call
+
+    render status: :ok, json: LatestPitcherSeasonSerializer.new(player).serialize
+  end
 
   def create
-    # 投手登録
-    ActiveRecord::Base.transaction do
-      # シーズン記録の存在確認および新規作成
-      player = Player.find(player_params[:id])
-      player.update(player_params)
+    # 投手シーズン記録の登録
+    result = Pitchers::CreatePitcherSeasonUseCase.new(
+      player_params: player_params,
+      player_season_params: player_season_params,
+      pitcher_season_params: pitcher_season_params,
+      pitcher_ability_params: pitcher_ability_params,
+      breaking_ball_params: breaking_ball_params
+    )
 
-      player_season = PlayerSeason.find_or_create_by(player_id: player.id, year:  player_season_params[:year])
-      player_season.assign_attributes(player_season_params)
-      player_season.save!
-
-      pitcher_season = PitcherSeason.find_or_create_by(player_season_id: player_season.id)
-      pitcher_season.assign_attributes(pitcher_season_params)
-      pitcher_season.save!
-
-      pitcher_ability = PitcherAbility.find_or_create_by(player_season_id: player_season.id)
-      pitcher_ability.assign_attributes(pitcher_ability_params)
-      pitcher_ability.save!
-
-      BreakingBall.where(player_season_id: player_season.id).destroy_all
-
-      breaking_ball_params_with_season = breaking_ball_params.map do |bb_params|
-        bb_params.merge(player_season_id: player_season.id)
-      end
-      BreakingBall.create(breaking_ball_params_with_season)
-
-      render json: player_season, status: :created
-    rescue ActiveRecord::RecordInvalid => e
-      render json: { error: e.message }, status: :unprocessable_entity
-    end
+    render json: result, status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   def update

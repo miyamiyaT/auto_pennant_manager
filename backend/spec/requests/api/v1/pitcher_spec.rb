@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Api::V1::PitcherSeasons', type: :request do
+RSpec.describe 'Api::V1::Pitcher', type: :request do
   describe 'GET' do
     let!(:team) { create(:team) }
     let!(:player) { create(:player, team: team) }
@@ -8,20 +8,33 @@ RSpec.describe 'Api::V1::PitcherSeasons', type: :request do
     let!(:player_season) { create(:player_season, player: player) }
     let!(:pitcher_season) { create(:pitcher_season, player_season: player_season) }
     let!(:pitcher_ability) { create(:pitcher_ability, player_season: player_season) }
+    let!(:breaking_ball) { create(:breaking_ball, player_season: player_season) }
 
     # 2セット目（同一選手に別シーズンを追加）
     let!(:player_season2)  { create(:player_season, player: player, year: 2027) }
     let!(:pitcher_season2)  { create(:pitcher_season, player_season: player_season2) }
     let!(:pitcher_ability2) { create(:pitcher_ability, player_season: player_season2) }
-
+    let!(:breaking_ball2) { create(:breaking_ball, player_season: player_season2) }
     it "returns batter detail" do
 
-      get "/api/v1/pitcher_seasons/#{team.id}?year=2026"
+      get "/api/v1/pitchers/#{player.id}"
 
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
 
-      expect(json).to include("players")
+      expect(json).to include("player_data")
+      expect(json['player_data']).to include('player', 'seasons')
+    end
+
+    it "returns batter detail" do
+
+      get "/api/v1/pitchers/#{player.id}/register"
+
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+
+      expect(json).to include("player_data")
+      expect(json['player_data']).to include('player', 'player_season', 'pitcher_season', 'pitcher_ability', 'breaking_ball')
     end
   end
 
@@ -111,7 +124,7 @@ RSpec.describe 'Api::V1::PitcherSeasons', type: :request do
     end
 
     it '投手登録が成功し 201 を返す' do
-      post '/api/v1/pitcher_seasons', params: params
+      post '/api/v1/pitchers', params: params
 
       expect(response).to have_http_status(:created)
 

@@ -18,7 +18,7 @@ class Api::V1::BatterSeasonsController < ApplicationController
   end
 
   def create
-    # 野手登録
+    # 野手シーズン記録の登録
     result = Batters::CreateBatterSeasonUseCase.new(
       player_params: player_params,
       player_season_params: player_season_params,

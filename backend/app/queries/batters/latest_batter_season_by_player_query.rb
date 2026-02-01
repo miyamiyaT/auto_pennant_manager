@@ -1,14 +1,11 @@
 module Batters
-  class LatestBatterSeasonByPlayerQuery
+  class LatestBatterSeasonByPlayerQuery < BaseBatterQuery
     def initialize(player_id:)
       @player_id = player_id
     end
 
     def call
-      player = Player
-        .includes(player_seasons: [:batter_seasons, :batter_abilities])
-        .find_by(id: @player_id, deleted_at: nil)
-
+      player = base_batter_relation
       return nil unless player
 
       season = player.player_seasons.order(year: :desc).first
