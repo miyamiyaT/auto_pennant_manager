@@ -8,23 +8,15 @@ class Api::V1::PlayersController < ApplicationController
   end
 
   def create
-    ActiveRecord::Base.transaction do
-      player = Player.new(player_params)
-      player.is_active = true
-      if player.save!
-        player_season = PlayerSeason.new(player_season_params.merge(player_id: player.id))
-  
-        if player_season.save!
-          render json: player_season, status: :created
-        else
-          render json: { error: player_season.errors.full_messages }, status: :unprocessable_entity
-        end
-      else
-        render json: { error: player.errors.full_messages }, status: :unprocessable_entity
-      end
-    rescue ActiveRecord::RecordInvalid => e
-      render json: { error: e.message }, status: :unprocessable_entity
-    end
+  player_season =
+    Players::CreatePlayerUseCase.new(
+      player_params: player_params,
+      player_season_params: player_season_params
+    ).call
+
+    render json: player_season, status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 
   def update
@@ -46,7 +38,7 @@ class Api::V1::PlayersController < ApplicationController
 
   def player_season_params()
     params.require(:player_season)
-          .permit(:year, :number, :age,
+          .permit(:year, :age, :growth_type, :current_growth_type,
                   :is_starter, :is_relief, :is_closer,
                   :is_catcher, :is_first, :is_second, :is_third,
                   :is_short, :is_outfielder)
