@@ -17,28 +17,18 @@ class Api::V1::PitcherSeasonsController < ApplicationController
   end
 
   def create
-    # 野手登録
-    ActiveRecord::Base.transaction do
-      # シーズン記録の存在確認および新規作成
-      player = Player.find(player_params[:id])
-      player.update(player_params)
+    # 投手シーズン記録の登録
+    result = Pitchers::CreatePitcherSeasonUseCase.new(
+      player_params: player_params,
+      player_season_params: player_season_params,
+      pitcher_season_params: pitcher_season_params,
+      pitcher_ability_params: pitcher_ability_params,
+      breaking_ball_params: breaking_ball_params
+    )
 
-      player_season = PlayerSeason.find_or_create_by(player_id: player.id, year:  player_season_params[:year])
-      player_season.assign_attributes(player_season_params)
-      player_season.save!
-
-      batter_season = BatterSeason.find_or_create_by(player_season_id: player_season.id)
-      batter_season.assign_attributes(batter_season_params)
-      batter_season.save!
-
-      batter_ability = BatterAbility.find_or_create_by(player_season_id: player_season.id)
-      batter_ability.assign_attributes(batter_ability_params)
-      batter_ability.save!
-
-      render json: player_season, status: :created
-    rescue ActiveRecord::RecordInvalid => e
-      render json: { error: e.message }, status: :unprocessable_entity
-    end
+    render json: result, status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   def update
@@ -60,19 +50,24 @@ class Api::V1::PitcherSeasonsController < ApplicationController
                   :is_short, :is_outfielder)
   end
 
-  def batter_season_params
-    params.require(:batter_season)
-          .permit(:games, :at_bat, :hits, :hr, :works, :total_bases, :rbi,
-                  :steals, :batting_average, :ab_hr, :slg, :oba, :ops
+  def pitcher_season_params
+    params.require(:pitcher_season)
+          .permit(:games, :innings, :thirds, :wins, :loses, :saves, :hold_points,
+                  :strikeouts, :bb, :hits_allowed_numbers, :earned_runs, :win_rate,
+                  :era , :k9, :bb9, :k_bb ,:whip,
                 )
   end
 
-  def batter_ability_params
-    params.require(:batter_ability)
-          .permit(:trajectory, :hit, :power, :run_speed, :arm_strength,
-                  :fielding, :catching, :clutch_rank, :vs_lhp_rank, :stealing_rank, 
-                  :running_rank, :throwing_rank, :catcher_rank, 
-                  :grit_rank, :recovery_rank, :special_ability
+  def pitcher_ability_params
+    params.require(:pitcher_ability)
+          .permit(:pitch_velocity, :control, :stamina, :w_risp_rank, :heather_rank, :vs_lbh_rank,
+                  :agile_rank, :poise_rank, :grit_rank, :recovery_rank, :special_ability
                   )
+  end
+
+  def breaking_ball_params
+    params.require(:breaking_ball).map do |bb_params|
+      bb_params.permit(:name, :direction, :variation, :is_original)
+    end
   end
 end

@@ -21,8 +21,6 @@ RSpec.describe 'Api::V1::BatterSeason', type: :request do
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
 
-      pp response.body
-
       expect(json).to include("players")
     end
   end
@@ -90,7 +88,7 @@ RSpec.describe 'Api::V1::BatterSeason', type: :request do
       }
     end
 
-    it '野手登録が成功し 201 を返す' do
+    it '登録が成功し 201 を返す' do
       post '/api/v1/batter_seasons', params: params
 
       expect(response).to have_http_status(:created)
