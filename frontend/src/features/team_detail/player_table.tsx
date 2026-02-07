@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { draftType } from '../../components/utils'; // utility functions
+import { DraftCell } from './components/draft_cell';
+import RoleChip from './components/role_chip';
+import ActiveChip from './components/active_chip';
+import PlayerDrawer from './player_drawer';
 
 interface Player {
   id: number;
@@ -22,60 +25,46 @@ interface Props {
 }
 
 const columns: GridColDef[] = [
-  { field: "name", headerName: "名前", width: 125
-   },
-  { field: "is_batter", headerName: "打撃", width: 50,
-    renderCell: (players) => {
-      return players.row.is_batter ?
-        (
-          <Link to={`/batter/${players.id}`} style={{ textDecoration: 'none', color: 'blue' }}>打撃</Link>
-        ) : null
-      },
-   },
-  { field: "is_pitcher", headerName: "投球", width: 50,
-    renderCell: (players) => {
-      return players.row.is_pitcher ?
-        (
-          <Link to={`/pitcher/${players.id}`} style={{ textDecoration: 'none', color: 'blue' }}>投球</Link>
-        ) : null
-      },
-   },
-  { field: "birthday", headerName: "誕生日", width: 100 },
+  {
+    field: 'active',
+    headerName: '現役',
+    width: 80,
+    renderCell: ({ row }) => (
+      <ActiveChip
+        isActive={row.is_active}
+      />
+    ),
+  },
   { field: "is_favorite", headerName: "⭐️", width: 50,
     renderCell: (players) => {
       return players.row.is_favorite ? "⭐️" : null
       },
    },
+  { field: "name", headerName: "名前", width: 125
+   },
+  {
+    field: 'role',
+    headerName: '役割',
+    width: 80,
+    renderCell: ({ row }) => (
+      <RoleChip
+        isBatter={row.is_batter}
+        isPitcher={row.is_pitcher}
+      />
+    ),
+  },
+  { field: "birthday", headerName: "誕生日", width: 100 },
   { field: "season_count", headerName: "年数", width: 50 },
-  { field: "batter", headerName: "登録", width: 50,
-    renderCell: (players) => {
-      return players.row.is_batter ?
-        (
-          <Link to={`/batter-season-registration-form/${players.id}`} style={{ textDecoration: 'none', color: 'blue' }}>打撃</Link>
-        ) : null
-      },
-   },
-  { field: "pitcher", headerName: "", width: 50,
-    renderCell: (players) => {
-      return players.row.is_pitcher ?
-        (
-          <Link to={`/pitcher-season-registration-form/${players.id}`} style={{ textDecoration: 'none', color: 'blue' }}>投球</Link>
-        ) : null
-      },
-   },
-   { field: "draft" ,headerName: "ドラフト", width: 150 ,
+   { field: "draft" ,headerName: "ドラフト", width: 180 ,
       valueGetter: (player,row) => { return row.draft_year ? row.draft_year : 0 },
-      renderCell: (players) => {
-      return players.row.draft_year ?
-    <div>{players.row.draft_year}年 {players.row.draft_rank}位 {draftType(players.row.draft_type)}</div>
-       : '-'
-     },
-     sortable: true, // ソートを可能にする
-   },
-   { field: "memo",headerName: "ドラフトメモ", width: 400 },
-];
+      renderCell: DraftCell,
+      sortable: true, // ソートを可能にする
+   }
+  ];
 
 const PlayerTable = ({ title, players }: Props) => {
+    const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+
   return (
     <div>
       <p>{title} {players.length}人</p>
@@ -83,6 +72,14 @@ const PlayerTable = ({ title, players }: Props) => {
         getRowHeight={() => 'auto'}
         rows={players}
         columns={columns}
+        disableRowSelectionOnClick
+        onRowClick={(params) => {
+          setSelectedPlayer(params.row as Player);
+        }}
+      />
+      <PlayerDrawer
+        player={selectedPlayer}
+        onClose={() => setSelectedPlayer(null)}
       />
     </div>
   );
