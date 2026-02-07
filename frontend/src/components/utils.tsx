@@ -26,9 +26,26 @@ export const positionCode = (type) => {
   return types[type] || "その他";
 };
 
-export const draftType = (type) => {
-  const types = ['高卒', '大卒', '社会人', '独立', 'その他']
-  return types[type] || "その他";
+const DRAFT_TYPE_LABEL: Record<string, string> = {
+  high_school: '高卒',
+  university: '大卒',
+  independent_league: '独立',
+  corporate: '社会人',
+  other: 'その他'
+}
+
+export const draftType = (type?: string) => {
+  return DRAFT_TYPE_LABEL[type ?? 'other'] ?? 'その他'
+}
+
+export const buildDraftText = (player: {
+  draft_year?: number;
+  draft_rank?: number;
+  draft_type?: string;
+}) => {
+  if (!player.draft_year) return '-';
+
+  return `${player.draft_year}年 ${player.draft_rank}位 ${draftType(player.draft_type)}`;
 };
 
 export const formatAverage = (num) => {

@@ -60,8 +60,8 @@ const TeamDetails = () => {
       <p>チーム名: {teamDetail["team"].name} {teamDetail["team"].sponsor}</p>
       <ActionButtons id={id} year={teamDetail["year"]}/>
       <PlayerTable title="現役選手"  players={teamDetail["active_players"]} />
-      <PlayerTable title="退団選手" players={teamDetail["retire_players"]} />
-      <SeasonList seasons={teamDetail["season_list"]} />
+      <PlayerTable title="退団選手"  players={teamDetail["retire_players"]} />
+
     </div>
   );
 };

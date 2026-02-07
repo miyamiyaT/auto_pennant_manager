@@ -9,7 +9,7 @@ class Player < ApplicationRecord
   validates :draft_year, allow_nil: true, inclusion: 2000..9999
   validates :draft_rank, allow_nil: true, inclusion: 1..12
 
-  enum draft_type: { high_school: 0, university: 1, independent_league: 2, corporate: 3, other: 4 }
+  enum draft_type: { high_school: 0, university: 1, corporate: 2, independent_league: 3, other: 4 }
 
   # アソシエーション
   belongs_to :team
