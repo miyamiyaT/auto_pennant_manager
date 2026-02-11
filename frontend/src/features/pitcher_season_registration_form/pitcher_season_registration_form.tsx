@@ -1,116 +1,123 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Typography, TextField, MenuItem, Button, Grid, Paper, FormControlLabel, Checkbox } from '@mui/material';
+import { createPitcherRegisterData, PitcherRegisterData, PitcherRegisterFormData } from '../../models/pitcher_register_form';
+import { buildPitcherAbilityPayload } from '../../models/pitcher_ability';
+
+import { mapPitcherRegisterResponseToFormData } from './mapper';
+
+import { Container, Box, Typography, Button, Grid, Paper, FormControlLabel, Checkbox } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import BasicInfoForm from './basic_info_form';
+
 import PitcherStatsForm from './pitcher_stats_form';
 import PitcherAbilitiesForm from './pitcher_abilities_form';
 import PositionCheckboxes from './position_check_box';
 import BreakingBallForm from './breaking_ball_form';
+import PlayerSeasonForm from './player_season_form';
+import { BreakingBall } from '../../models/breaking_ball';
+import { buildPlayerSeasonPayload } from '../../models/player_season';
+import { buildPitcherSeasonPayload, PitcherSeasonForm } from '../../models/pitcher_season';
 
 const App = () => {
-  const [formData, setFormData] = useState(null);
-  const [playerDetails, setPlayerDetails] = useState(null);
+  const [formData, setFormData] = useState<PitcherRegisterData>(() => createPitcherRegisterData());;
   const { id } = useParams();
   const navigate = useNavigate();
 
-
   useEffect(() => {
-    fetch(`http://localhost:3000/api/v1/pitchers/${id}?type=0`)
+    fetch(`http://localhost:3000/api/v1/pitchers/${id}/register?`)
       .then(response => response.json())
-      .then(data => {
-        const PlayerData = data.player[0]
-        const playerSeason = data.player[0].player_seasons[0];
-        const pitcherSeason = playerSeason.pitcher_season || {};
-        const pitcherAbility = playerSeason.pitcher_ability || {};
-        const breakingBall = playerSeason.breaking_ball || [];
-
-        setFormData({
-          name: PlayerData.name || '',
-          birthday: PlayerData.birthday || '',
-          active: PlayerData.is_active || '',
-          age: 0,
-          year: playerSeason.year + 1 || '',
-          growthType: playerSeason.growth_type,
-          currentGrowthType: playerSeason.current_growth_type,
-          starter: playerSeason.is_starter,
-          relief: playerSeason.is_relief,
-          closer: playerSeason.is_closer,
-          catcher: playerSeason.is_catcher,
-          first: playerSeason.is_first,
-          second: playerSeason.is_second,
-          third: playerSeason.is_third,
-          short: playerSeason.is_short,
-          outfielder: playerSeason.is_outfielder,
-          seasonMemo: playerSeason.memo || '',
-          games: pitcherSeason.games || '',
-          innings: pitcherSeason.innings || '',
-          thirds: pitcherSeason.thirds || '',
-          wins: pitcherSeason.wins || '',
-          loses: pitcherSeason.loses || '',
-          saves: pitcherSeason.saves || '',
-          holdPoints: pitcherSeason.hold_points || '',
-          strikeouts: pitcherSeason.strikeouts || '',
-          bb: pitcherSeason.bb || '',
-          hitsAllowedNumbers: pitcherSeason.hits_allowed_numbers || '',
-          earnedRuns: pitcherSeason.earned_runs || '',
-          pitchVelocity: pitcherAbility.pitch_velocity || '',
-          control: pitcherAbility.control || '',
-          stamina: pitcherAbility.stamina || '',
-          wRispRank: pitcherAbility.w_risp_rank || 'D',
-          heatherRank: pitcherAbility.heather_rank || 'D',
-          vsLbhRank: pitcherAbility.vs_lbh_rank || 'D',
-          agileRank: pitcherAbility.agile_rank || 'D',
-          poiseRank: pitcherAbility.poise_rank || 'D',
-          gritRank: pitcherAbility.grit_rank || 'D',
-          recoveryRank: pitcherAbility.recovery_rank || 'D',
-          specialAbility: pitcherAbility.special_ability || '',
-          breakingBall: breakingBall.map(ball => ({
-            name: ball.name || '',
-            direction: ball.direction ?? '',
-            variation: ball.variation || '',
-            is_original: ball.is_original || false
-          }))
-        });
-
-        setPlayerDetails(data);
+      .then((data) => {
+        setFormData(mapPitcherRegisterResponseToFormData(data));
       })
       .catch(error => console.error("Fetching data failed", error));
   }, [id]);
 
-  if (!formData) {
-    return <div>Loading...</div>;
-  }
+  const handlePlayerSeasonChange: React.ChangeEventHandler< HTMLInputElement | HTMLTextAreaElement > = (e) => {
+    const { name, value } = e.target;
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      player_season: {
+        ...prev.player_season,
+        [name]: value,
+      },
+    }));
+  };
 
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+
+const handlePositionCheckboxChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+  const { name, checked } = e.target;
+  setFormData((prev) => ({
+    ...prev,
+    player_season: {
+      ...prev.player_season,
+      [name]: checked,
+    },
+  }));
+};
+
+  const handleActiveChange = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      player: {
+        ...prev.player,
+        [name]: checked,
+      },
+    }));
+  };
+
+    const handlePitcherSeasonChange: React.ChangeEventHandler< HTMLInputElement | HTMLTextAreaElement > = (e) => {
+    const { name, value } = e.target;
+
+    setFormData(prev => ({
+      ...prev,
+      pitcher_season: {
+        ...prev.pitcher_season,
+        [name]: value,
+      },
+    }));
+  };
+
+  const handlePitcherAbilityChange: React.ChangeEventHandler< HTMLInputElement | HTMLTextAreaElement > = (e) => {
+    const { name, value } = e.target;
+
+    setFormData(prev => ({
+      ...prev,
+      pitcher_ability: {
+        ...prev.pitcher_ability,
+        [name]: value,
+      },
+    }));
+  };
+
+  // 変化球の変更handle
+  const handleBreakingBallChange = (
+    index: number,
+    key: keyof BreakingBall,
+    value: BreakingBall[keyof BreakingBall]
+  ) => {
+    setFormData(prev => {
+      const next = [...prev.breaking_ball];
+      next[index] = { ...next[index], [key]: value };
+      return { ...prev, breaking_ball: next };
     });
   };
 
-  const breakingBallHandleChange = (index, field, value) => {
-    const newBreakingBalls = [...formData.breakingBall];
-    newBreakingBalls[index][field] = value;
-    setFormData({ ...formData, breakingBall: newBreakingBalls });
-  };
-
   const breakingBallHandleAdd = () => {
-    if (formData.breakingBall.length < 10) {
+    if (formData.breaking_ball.length < 10) {
       setFormData({
         ...formData,
-        breakingBall: [...formData.breakingBall, { name: '', direction: '', variation: '', is_original: false }]
+        breaking_ball: [...formData.breaking_ball, { name: '', direction: 0, variation: 0, is_original: false }]
       });
     }
   };
 
   const breakingBallHandleRemove = (index) => {
-    const newBreakingBalls = [...formData.breakingBall];
+    const newBreakingBalls = [...formData.breaking_ball];
     newBreakingBalls.splice(index, 1);
-    setFormData({ ...formData, breakingBall: newBreakingBalls });
+    setFormData({ ...formData, breaking_ball: newBreakingBalls });
   };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -134,17 +141,18 @@ const App = () => {
   };
 
   const calculateStats = () => {
-    // const calculateAge = 
-    const allInnings = Number(formData.innings) + (Number(formData.thirds) / 3) || 0;
-    const earnedRuns = Number(formData.earnedRuns) || 0;
-    const wins = Number(formData.wins) || 0;
-    const loses = Number(formData.loses) || 0;
-    const strikeouts = Number(formData.strikeouts) || 0;
-    const bb = Number(formData.bb) || 0;
-    const hitsAllowedNumbers = Number(formData.hitsAllowedNumbers) || 0;
+    const allInnings = Number(formData.pitcher_season.innings) + (Number(formData.pitcher_season.thirds) / 3) || 0;
+    const earnedRuns = Number(formData.pitcher_season.earned_runs) || 0;
+    const wins = Number(formData.pitcher_season.wins) || 0;
+    const loses = Number(formData.pitcher_season.loses) || 0;
+    const strikeouts = Number(formData.pitcher_season.strikeouts) || 0;
+    const bb = Number(formData.pitcher_season.bb) || 0;
+    const hitsAllowedNumbers = Number(formData.pitcher_season.hits_allowed_numbers) || 0;
+    const PlayerSeasonYear = Number(formData.player_season.year) || 0;
+    const birthdayStr = formData.player.birthday ?? '';
 
-    const birthYear = new Date(formData.birthday).getFullYear();
-    const calculateAge = formData.year - birthYear;
+    const birthYear =  birthdayStr ? new Date(birthdayStr).getFullYear() : 0 ;
+    const calculateAge = PlayerSeasonYear - birthYear;
     const era = ((earnedRuns * 9) / allInnings).toFixed(2);
     const winRate = (wins / (wins + loses)).toFixed(2);
     const k9 = ((strikeouts * 9) / allInnings).toFixed(2);
@@ -152,7 +160,7 @@ const App = () => {
     const kBb = (strikeouts / bb).toFixed(2);
     const whip = ((hitsAllowedNumbers + bb) / allInnings).toFixed(2);
     return {
-      calculateAge: calculateAge === 'NaN' ? '0' : calculateAge,
+      calculateAge: calculateAge,
       era: era === 'NaN' ? '0.00' : era,
       winRate: winRate === 'NaN' ? '0.00' : winRate,
       k9: k9 === 'NaN' ? '0.00' : k9,
@@ -161,19 +169,18 @@ const App = () => {
       whip: whip === 'NaN' ? '0.00' : whip,
     };
   };
-
+console.log(formData)
   const calculatedStats = calculateStats();
-
   return (
     <Container>
       <Box mt={5} component={Paper} p={3}>
         <Typography variant="h4" gutterBottom>
-          選手登録フォーム: {formData.name}
+          選手登録フォーム: {formData.player.name}
         </Typography>
         <form onSubmit={handleSubmit}>
           <Grid item xs={4}>
             <FormControlLabel
-              control={<Checkbox checked={formData.active} onChange={handleChange} name="active" />}
+              control={<Checkbox checked={formData.player.is_active} onChange={handleActiveChange} name="is_active" />}
               label="現役選手"
             />
           </Grid>
@@ -181,11 +188,11 @@ const App = () => {
             <Typography>年齢: {calculatedStats.calculateAge}</Typography>
           </Grid>
           <br />
-          <BasicInfoForm formData={formData} handleChange={handleChange} />
+          <PlayerSeasonForm formData={formData.player_season} handleChange={handlePlayerSeasonChange} />
           <br />
-          <PositionCheckboxes playerData={formData} handleChange={handleChange} />
+          <PositionCheckboxes formData={formData.player_season} handleChange={handlePositionCheckboxChange} />
           <br />
-          <PitcherStatsForm formData={formData} handleChange={handleChange} />
+          <PitcherStatsForm formData={formData.pitcher_season} handleChange={handlePitcherSeasonChange} />
           <br />
           <Box mt={2}>
             <Typography variant="h6">算出結果</Typography>
@@ -211,10 +218,10 @@ const App = () => {
             </Grid>
           </Box>
           <br />
-          <PitcherAbilitiesForm formData={formData} handleChange={handleChange} />
+          <PitcherAbilitiesForm formData={formData.pitcher_ability} handleChange={handlePitcherAbilityChange} />
           <br />
-          <BreakingBallForm formData={formData.breakingBall}
-            breakingBallHandleChange={breakingBallHandleChange}
+          <BreakingBallForm formData={formData.breaking_ball}
+            handleBreakingBallChange={handleBreakingBallChange}
             breakingBallHandleAdd={breakingBallHandleAdd}
             breakingBallHandleRemove={breakingBallHandleRemove} />
           <Box mt={3}>
@@ -227,67 +234,17 @@ const App = () => {
     </Container>
   );
 };
-const toNumber = (value) => {
-  const num = parseInt(value, 10);
-  return isNaN(num) ? 0 : num;
-};
 
-const createJsonData = (formData, stats, id) => {
+const createJsonData = (formData: PitcherRegisterFormData, stats: PitcherSeasonForm, id: Number) => {
   return {
     player: {
       id: id,
-      is_active: formData.active
+      is_active: formData.player.is_active
     },
-    player_season: {
-      year: formData.year,
-      age: stats.calculateAge,
-      memo: formData.seasonMemo,
-      growth_type: formData.growthType,
-      current_growth_type: formData.currentGrowthType,
-      is_starter: formData.starter,
-      is_relief: formData.relief,
-      is_closer: formData.closer,
-      is_catcher: formData.catcher,
-      is_first: formData.first,
-      is_second: formData.second,
-      is_third: formData.third,
-      is_short: formData.short,
-      is_outfielder: formData.outfielder,
-    },
-    pitcher_season: {
-      games: toNumber(formData.games),
-      innings: toNumber(formData.innings),
-      thirds: toNumber(formData.thirds),
-      wins: toNumber(formData.wins),
-      loses: toNumber(formData.loses),
-      saves: toNumber(formData.saves),
-      steals: toNumber(formData.steals),
-      hold_points: toNumber(formData.holdPoints),
-      strikeouts: toNumber(formData.strikeouts),
-      bb: toNumber(formData.bb),
-      hits_allowed_numbers: toNumber(formData.hitsAllowedNumbers),
-      earned_runs: toNumber(formData.earnedRuns),
-      win_rate: stats.winRate,
-      era: stats.era,
-      k9: stats.k9,
-      bb9: stats.bb9,
-      k_bb: stats.kBb,
-      whip: stats.whip
-    },
-    pitcher_ability: {
-      pitch_velocity: formData.pitchVelocity,
-      control: formData.control,
-      stamina: formData.stamina,
-      w_risp_rank: formData.wRispRank,
-      heather_rank: formData.heatherRank,
-      vs_lbh_rank: formData.vsLbhRank,
-      agile_rank: formData.agileRank,
-      poise_rank: formData.poiseRank,
-      grit_rank: formData.gritRank,
-      recovery_rank: formData.recoveryRank,
-      special_ability: formData.specialAbility,
-    },
-    breaking_ball: formData.breakingBall
+    player_season: buildPlayerSeasonPayload(formData.player_season),
+    pitcher_season: buildPitcherSeasonPayload(formData.pitcher_season, stats),
+    pitcher_ability: buildPitcherAbilityPayload(formData.pitcher_ability),
+    breaking_ball: formData.breaking_ball
 
   };
 };

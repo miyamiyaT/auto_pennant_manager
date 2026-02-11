@@ -1,6 +1,5 @@
 class LatestPitcherSeasonSerializer
   include Alba::Resource
-  root_key :player_data
 
   one :player 
 

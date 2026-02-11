@@ -1,5 +1,7 @@
 import React from 'react';
-import { Grid, TextField, MenuItem } from '@mui/material';
+import { TextField, MenuItem, Grid2 } from '@mui/material';
+
+import { PitcherAbility } from '../../models/pitcher_ability';
 
 const abilities = [
   { value: 'S', label: 'S' },
@@ -12,21 +14,33 @@ const abilities = [
   { value: 'G', label: 'G' }
 ];
 
-const PlayerAbilitiesForm = ({ formData, handleChange }) => {
+type PlayerAbilitiesFormProps = {
+  formData: PitcherAbility;
+  handleChange: React.ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  >;
+};
+
+const PlayerAbilitiesForm: React.FC<PlayerAbilitiesFormProps>  = ({ formData, handleChange }) => {
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={3}>
+    <Grid2 container spacing={2}>
+      <Grid2 size={{ xs: 3 }} >
         <TextField
           type="number"
           label="球速"
-          name="pitchVelocity"
-          value={formData.pitchVelocity}
+          name="pitch_velocity"
+          value={formData.pitch_velocity}
           onChange={handleChange}
           fullWidth
-          inputProps={{ min: 80, max: 180 }}
+          slotProps = {{ 
+            inputLabel: { shrink: true },
+            input:{
+              inputProps: { min: 80, max: 180 , step: 1, inputMode: 'numeric'}
+            }
+          }}
         />
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           type="number"
           label="コントロール"
@@ -34,10 +48,15 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
           value={formData.control}
           onChange={handleChange}
           fullWidth
-          inputProps={{ min: 1, max: 100 }}
+          slotProps = {{ 
+            inputLabel: { shrink: true },
+            input:{
+              inputProps: { min: 1, max: 100 , step: 1, inputMode: 'numeric'}
+            }
+          }}
         />
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           type="number"
           label="スタミナ"
@@ -45,17 +64,22 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
           value={formData.stamina}
           onChange={handleChange}
           fullWidth
-          inputProps={{ min: 1, max: 100 }}
+          slotProps = {{ 
+            inputLabel: { shrink: true },
+            input:{
+              inputProps: { min: 1, max: 100 , step: 1, inputMode: 'numeric'}
+            }
+          }}
         />
-      </Grid>
-      <Grid item xs={3}>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="対ピンチ"
-          name="wRisp"
-          value={formData.wRisp}
+          name="w_risp_rank"
+          value={formData.w_risp_rank}
           onChange={handleChange}
           fullWidth
         >
@@ -65,13 +89,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="対左打者"
-          name="vsLbh"
-          value={formData.vsLbh}
+          name="vs_lbh_rank"
+          value={formData.vs_lbh_rank}
           onChange={handleChange}
           fullWidth
         >
@@ -81,13 +105,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="打たれ強さ"
-          name="poise"
-          value={formData.poise}
+          name="poise_rank"
+          value={formData.poise_rank}
           onChange={handleChange}
           fullWidth
         >
@@ -97,13 +121,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="怪我しにくさ"
-          name="grit"
-          value={formData.grit}
+          name="grit_rank"
+          value={formData.grit_rank}
           onChange={handleChange}
           fullWidth
         >
@@ -113,13 +137,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="ノビ"
-          name="heatherRank"
-          value={formData.heatherRank}
+          name="heather_rank"
+          value={formData.heather_rank}
           onChange={handleChange}
           fullWidth
         >
@@ -129,13 +153,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="クイック"
-          name="agile"
-          value={formData.agile}
+          name="agile_rank"
+          value={formData.agile_rank}
           onChange={handleChange}
           fullWidth
         >
@@ -145,13 +169,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="回復"
-          name="recovery"
-          value={formData.recovery}
+          name="recovery_rank"
+          value={formData.recovery_rank}
           onChange={handleChange}
           fullWidth
         >
@@ -161,19 +185,19 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={12}>
+      </Grid2>
+      <Grid2 size={{ xs: 12 }}>
         <TextField
           label="特殊能力"
-          name="specialAbility"
-          value={formData.specialAbility}
+          name="special_ability"
+          value={formData.special_ability}
           onChange={handleChange}
           fullWidth
           multiline
           rows={4}
         />
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 };
 
