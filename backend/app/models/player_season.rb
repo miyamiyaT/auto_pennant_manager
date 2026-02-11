@@ -10,7 +10,6 @@ class PlayerSeason < ApplicationRecord
   validates :number, length: { maximum: 3 }, allow_nil: true
   validates :plate_appearances, length: { maximum: 80 }
   validates :memo, length: { maximum: 80 }
-  validates :growth_type, :current_growth_type, presence: true
 
   # アソシエーション
   belongs_to :player
