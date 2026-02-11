@@ -3,17 +3,11 @@ import { Button } from '@mui/material';
 import Grid from '@mui/material/Grid'
 import { Link } from 'react-router-dom';
 
-interface Year {
-  latest_year: number;
-  years: number[];
-}
-
 interface Props {
-  id: number
-  year: Year[]
+  id: string
 }
 
-const ActionButtons = ({ id, year }: Props) => {
+const ActionButtons = ({ id }: Props) => {
   return (
     <Grid container spacing={2} justifyContent="center">
       <Grid item>

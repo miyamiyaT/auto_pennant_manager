@@ -6,18 +6,8 @@ import { DraftCell } from './components/draft_cell';
 import RoleChip from './components/role_chip';
 import ActiveChip from './components/active_chip';
 import PlayerDrawer from './player_drawer';
+import { Player } from '../../models/player';
 
-interface Player {
-  id: number;
-  name: string;
-  birthday: string;
-  is_favorite: boolean;
-  season_count: number;
-  memo: string;
-  is_batter: boolean,
-  is_pitcher: boolean,
-  draft_year: number
-}
 
 interface Props {
   title: string;
@@ -67,7 +57,7 @@ const PlayerTable = ({ title, players }: Props) => {
 
   return (
     <div>
-      <p>{title} {players.length}人</p>
+      <p>{title}</p>
       <DataGrid
         getRowHeight={() => 'auto'}
         rows={players}
