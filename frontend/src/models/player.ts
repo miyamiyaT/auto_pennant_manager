@@ -6,9 +6,9 @@ export type Player = {
     is_active: boolean;
     is_favorite: boolean;
     roy: boolean;
-    draft_year: number | null;
-    draft_type: string | null;
-    draft_rank: number | null;
+    draft_year?: number | null;
+    draft_type?: string | null;
+    draft_rank?: number | null;
     season_count: number | null;
     is_batter: boolean;
     is_pitcher: boolean;
@@ -50,15 +50,15 @@ export const buildPlayerPayload = (
     form: PlayerForm
 ): Player => ({
     name: form.name || '',
-    birthday: form.birthday || '',
+    birthday: form.birthday || null,
     memo: form.memo || '',
-    is_active: form.is_active ? Boolean(form.is_active) : false,
-    is_favorite: form.is_favorite ? Boolean(form.is_favorite) : false,
-    roy: form.roy ? Boolean(form.roy) : false,
+    is_active: form.is_active === "true",
+    is_favorite: form.is_favorite === "true",
+    roy: form.roy === "true",
     draft_year: form.draft_year ? Number(form.draft_year) : 0,
     draft_type: form.draft_type || '',
     draft_rank: form.draft_rank ? Number(form.draft_rank) : 0,
     season_count: form.season_count ? Number(form.season_count) : 0,
-    is_batter: form.is_batter ? Boolean(form.is_batter) : false,
-    is_pitcher: form.is_pitcher ? Boolean(form.is_pitcher) : false
+    is_batter: form.is_batter === "true",    
+    is_pitcher: form.is_pitcher === "true",
 });

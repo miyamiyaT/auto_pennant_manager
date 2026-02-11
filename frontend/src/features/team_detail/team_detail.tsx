@@ -1,46 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PlayerTable from './player_table';
-import SeasonList from './season_list';
 import ActionButtons from './action_burrons';
-
-interface Player {
-  id: number;
-  name: string;
-  birthday: string;
-  is_favorite: boolean;
-  is_batter: boolean;
-  is_pitcher: boolean;
-  season_count: number;
-  memo: string;
-}
-
-interface Team {
-  name: string;
-  sponsor: string;
-}
-
-interface Year {
-  latest_year: number;
-  years: number[];
-}
-
-interface Id {
-  id: number
-}
-
-interface Props {
-  active_players: Player[];
-  retire_players: Player[];
-  season_list: number[];
-  team: Team[];
-  year: Year[];
-}
-
+import { TeamDetail } from '../../models/team_detail';
 
 const TeamDetails = () => {
-  const { id } = useParams<Id>();
-  const [teamDetail, setTeamDetail] = useState<Props>();
+  const { id } = useParams<{ id: string }>();
+  const [teamDetail, setTeamDetail] = useState<TeamDetail>();
 
   useEffect(() => {
     fetch(`http://localhost:3000/api/v1/teams/${id}`)
@@ -55,12 +21,14 @@ const TeamDetails = () => {
     return <div>Loading...</div>;
   }
 
+  if (!id) return <div>Invalid ID</div>;
+    console.log(teamDetail)
   return (
     <div>
-      <p>チーム名: {teamDetail["team"].name} {teamDetail["team"].sponsor}</p>
-      <ActionButtons id={id} year={teamDetail["year"]}/>
-      <PlayerTable title="現役選手"  players={teamDetail["active_players"]} />
-      <PlayerTable title="退団選手"  players={teamDetail["retire_players"]} />
+      <p>チーム名: {teamDetail.team.name} {teamDetail.team.sponsor}</p>
+      <ActionButtons id ={id} />
+      <PlayerTable title="現役選手"  players={teamDetail.active_players} />
+      <PlayerTable title="退団選手"  players={teamDetail.retire_players} />
 
     </div>
   );
