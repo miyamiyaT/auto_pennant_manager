@@ -18,12 +18,12 @@ import { buildPlayerSeasonPayload } from '../../models/player_season';
 import { buildPitcherSeasonPayload, PitcherSeasonForm } from '../../models/pitcher_season';
 
 const App = () => {
-  const [formData, setFormData] = useState<PitcherRegisterData>(() => createPitcherRegisterData());;
+  const [formData, setFormData] = useState<PitcherRegisterData>(() => createPitcherRegisterData());
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/v1/pitchers/${id}/register?`)
+    fetch(`http://localhost:3000/api/v1/pitchers/${id}/register`)
       .then(response => response.json())
       .then((data) => {
         setFormData(mapPitcherRegisterResponseToFormData(data));

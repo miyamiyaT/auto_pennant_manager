@@ -6,75 +6,26 @@ import BasicInfoForm from './basic_info_form';
 import BatterStatsForm from './batter_stats_form';
 import BatterAbilitiesForm from './batter_abilities_form';
 import PositionCheckboxes from './position_check_box';
+import { BatterRegisterData, createBatterRegisterData } from '../../models/batter_register_form';
+import { mapBatterRegisterResponseToFormData } from './mapper';
 
 const App = () => {
-  const [formData, setFormData] = useState(null);
+  const [formData, setFormData] = useState<BatterRegisterData>(() => createBatterRegisterData());
   const [playerDetails, setPlayerDetails] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
 
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/v1/batters/${id}?type=0`)
+    fetch(`http://localhost:3000/api/v1/batters/${id}/register`)
       .then(response => response.json())
       .then(data => {
-        const PlayerData = data.player[0]
-        const playerSeason = data.player[0].player_seasons[0];
-        const batterSeason = playerSeason.batter_season || {};
-        const batterAbility = playerSeason.batter_ability || {};
-
-        setFormData({
-          name: PlayerData.name || '',
-          birthday: PlayerData.birthday || '',
-          active: PlayerData.is_active || '',
-          age: 0,
-          year: playerSeason.year + 1 || '',
-          growthType: playerSeason.growth_type,
-          currentGrowthType: playerSeason.current_growth_type,
-          starter: playerSeason.is_starter,
-          relief: playerSeason.is_relief,
-          closer: playerSeason.is_closer,
-          catcher: playerSeason.is_catcher,
-          first: playerSeason.is_first,
-          second: playerSeason.is_second,
-          third: playerSeason.is_third,
-          short: playerSeason.is_short,
-          outfielder: playerSeason.is_outfielder,
-          seasonMemo: playerSeason.memo || '',
-          games: batterSeason.games || '',
-          atBats: batterSeason.at_bat || '',
-          hits: batterSeason.hits || '',
-          homeRuns: batterSeason.hr || '',
-          totalBases: batterSeason.total_bases || '',
-          works: batterSeason.works || '',
-          rbi: batterSeason.rbi || '',
-          steals: batterSeason.steals || '',
-          trajectory: batterAbility.trajectory || '',
-          hit: batterAbility.hit || '',
-          power: batterAbility.power || '',
-          runSpeed: batterAbility.run_speed || '',
-          armStrength: batterAbility.arm_strength || '',
-          fielding: batterAbility.fielding || '',
-          catching: batterAbility.catching || '',
-          clutchRank: batterAbility.clutch_rank || 'D',
-          vsLhpRank: batterAbility.vs_lhp_rank || 'D',
-          stealingRank: batterAbility.stealing_rank || 'D',
-          runningRank: batterAbility.running_rank || 'D',
-          catcherRank: batterAbility.catcher_rank || null,
-          gritRank: batterAbility.grit_rank || 'D',
-          recoveryRank: batterAbility.recovery_rank || 'D',
-          throwingRank: batterAbility.throwing_rank || 'D',
-          specialAbility: batterAbility.special_ability || 'D',
-        });
+        setFormData(mapBatterRegisterResponseToFormData(data))
 
         setPlayerDetails(data);
       })
       .catch(error => console.error("Fetching data failed", error));
   }, [id]);
-
-  if (!formData) {
-    return <div>Loading...</div>;
-  }
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -107,16 +58,24 @@ const App = () => {
   };
 
   const calculateStats = () => {
-    // const calculateAge = 
-    const birthYear = new Date(formData.birthday).getFullYear();
-    const calculateAge = formData.year - birthYear;
-    const battingAverage = (formData.hits / formData.atBats).toFixed(3);
-    const homeRunRate = (formData.atBats / formData.homeRuns).toFixed(3);
-    const sluggingPercentage = (formData.totalBases / formData.atBats).toFixed(3);
-    const onBasePercentage = ((parseInt(formData.hits) + parseInt(formData.works)) / (parseInt(formData.atBats) + parseInt(formData.works))).toFixed(3);
+    const birthdayStr = formData.player.birthday ?? '';
+    const birthYear =  birthdayStr ? new Date(birthdayStr).getFullYear() : 0 ;
+    const PlayerSeasonYear = Number(formData.player_season.year) || 0;
+    const calculateAge = PlayerSeasonYear - birthYear;
+
+    const hits = Number(formData.batter_season.hits) || 0;
+    const atBat = Number(formData.batter_season.at_bat) || 0;
+    const hr = Number(formData.batter_season.hr) || 0;
+    const totalBases = Number(formData.batter_season.total_bases) || 0;
+    const works = Number(formData.batter_season.works) || 0;
+
+    const battingAverage = (hits / atBat).toFixed(3);
+    const homeRunRate = (atBat / hr).toFixed(3);
+    const sluggingPercentage = (totalBases / atBat).toFixed(3);
+    const onBasePercentage = ((hits + works) / (atBat + works)).toFixed(3);
     const ops = (parseFloat(onBasePercentage) + parseFloat(sluggingPercentage)).toFixed(3);
     return {
-      calculateAge: calculateAge === 'NaN' ? '0' : calculateAge,
+      calculateAge: calculateAge == null ? '0' : calculateAge,
       battingAverage: battingAverage === 'NaN' ? '0.000' : battingAverage,
       homeRunRate: homeRunRate === 'NaN' || homeRunRate === 'Infinity' ? '0.000' : homeRunRate,
       sluggingPercentage: sluggingPercentage === 'NaN' ? '0.000' : sluggingPercentage,
@@ -131,12 +90,12 @@ const App = () => {
     <Container>
       <Box mt={5} component={Paper} p={3}>
         <Typography variant="h4" gutterBottom>
-          選手登録フォーム: {formData.name}
+          選手登録フォーム: {formData.player.name}
         </Typography>
         <form onSubmit={handleSubmit}>
           <Grid item xs={4}>
             <FormControlLabel
-              control={<Checkbox checked={formData.active} onChange={handleChange} name="active" />}
+              control={<Checkbox checked={formData.player.is_active} onChange={handleChange} name="active" />}
               label="現役選手"
             />
           </Grid>
