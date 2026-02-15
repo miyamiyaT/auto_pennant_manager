@@ -16,7 +16,7 @@ export type TeamForm = {
     sponsor: string;
 };
 
-export const buildPlayerPayload = (
+export const buildTeamPayload = (
     form: TeamForm
 ): Team => ({
     name: form.name || '',

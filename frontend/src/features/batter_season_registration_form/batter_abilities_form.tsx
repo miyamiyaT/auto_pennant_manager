@@ -1,5 +1,6 @@
 import React from 'react';
-import { Grid, TextField, MenuItem } from '@mui/material';
+import { Grid2, TextField, MenuItem } from '@mui/material';
+import { BatterAbility } from '../../models/batter_ability';
 
 const abilities = [
   { value: 'S', label: 'S' },
@@ -12,10 +13,16 @@ const abilities = [
   { value: 'G', label: 'G' }
 ];
 
-const PlayerAbilitiesForm = ({ formData, handleChange }) => {
-  return (
-    <Grid container spacing={2}>
-      <Grid item xs={3}>
+type BatterAbilityFormProps = {
+  formData: BatterAbility;
+  handleChange: React.ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  >;
+};
+
+const BatterAbilityForm: React.FC<BatterAbilityFormProps>  = ({ formData, handleChange }) => {  return (
+    <Grid2 container spacing={2}>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           type="number"
           label="弾道"
@@ -23,10 +30,15 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
           value={formData.trajectory}
           onChange={handleChange}
           fullWidth
-          inputProps={{ min: 1, max: 4 }}
+          slotProps = {{ 
+            inputLabel: { shrink: true },
+            input:{
+              inputProps: { min: 1, max: 4 , step: 1, inputMode: 'numeric'}
+            }
+          }}
         />
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           type="number"
           label="ミート"
@@ -34,10 +46,15 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
           value={formData.hit}
           onChange={handleChange}
           fullWidth
-          inputProps={{ min: 1, max: 100 }}
+          slotProps = {{ 
+            inputLabel: { shrink: true },
+            input:{
+              inputProps: { min: 1, max: 100 , step: 1, inputMode: 'numeric'}
+            }
+          }}
         />
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           type="number"
           label="パワー"
@@ -45,32 +62,45 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
           value={formData.power}
           onChange={handleChange}
           fullWidth
-          inputProps={{ min: 1, max: 100 }}
+          slotProps = {{ 
+            inputLabel: { shrink: true },
+            input:{
+              inputProps: { min: 1, max: 100 , step: 1, inputMode: 'numeric'}
+            }
+          }}
         />
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           type="number"
           label="走力"
           name="runSpeed"
-          value={formData.runSpeed}
+          value={formData.run_speed}
           onChange={handleChange}
           fullWidth
-          inputProps={{ min: 1, max: 100 }}
-        />
-      </Grid>
-      <Grid item xs={3}>
+          slotProps = {{ 
+            inputLabel: { shrink: true },
+            input:{
+              inputProps: { min: 1, max: 100 , step: 1, inputMode: 'numeric'}
+            }
+          }}        />
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           type="number"
           label="肩力"
           name="armStrength"
-          value={formData.armStrength}
+          value={formData.arm_strength}
           onChange={handleChange}
           fullWidth
-          inputProps={{ min: 1, max: 100 }}
-        />
-      </Grid>
-      <Grid item xs={3}>
+          slotProps = {{ 
+            inputLabel: { shrink: true },
+            input:{
+              inputProps: { min: 1, max: 100 , step: 1, inputMode: 'numeric'}
+            }
+          }}        />
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           type="number"
           label="守備力"
@@ -78,10 +108,14 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
           value={formData.fielding}
           onChange={handleChange}
           fullWidth
-          inputProps={{ min: 1, max: 100 }}
-        />
-      </Grid>
-      <Grid item xs={3}>
+          slotProps = {{ 
+            inputLabel: { shrink: true },
+            input:{
+              inputProps: { min: 1, max: 100 , step: 1, inputMode: 'numeric'}
+            }
+          }}        />
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           type="number"
           label="捕球"
@@ -89,18 +123,22 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
           value={formData.catching}
           onChange={handleChange}
           fullWidth
-          inputProps={{ min: 1, max: 100 }}
-        />
-      </Grid>
-      <Grid item xs={3}>
+          slotProps = {{ 
+            inputLabel: { shrink: true },
+            input:{
+              inputProps: { min: 1, max: 100 , step: 1, inputMode: 'numeric'}
+            }
+          }}        />
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
 
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="チャンス"
           name="clutch"
-          value={formData.clutch ? formData.clutch : "D"}
+          value={formData.clutch_rank ? formData.catcher_rank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -110,13 +148,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="対左"
           name="vsLhp"
-          value={formData.vsLhp ? formData.vsLhp : "D"}
+          value={formData.vs_lhp_rank ? formData.vs_lhp_rank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -126,13 +164,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="キャッチャー"
           name="catcher_skill"
-          value={formData.catcher_skill}
+          value={formData.catcher_rank}
           onChange={handleChange}
           fullWidth
         >
@@ -142,13 +180,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="怪我しにくさ"
           name="grit"
-          value={formData.grit ? formData.grit : "D"}
+          value={formData.grit_rank ? formData.grit_rank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -158,13 +196,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="盗塁"
           name="stealing"
-          value={formData.stealing ? formData.stealing : "D"}
+          value={formData.stealing_rank ? formData.stealing_rank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -174,13 +212,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="走塁"
           name="running"
-          value={formData.running ? formData.running : "D"}
+          value={formData.running_rank ? formData.running_rank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -190,13 +228,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="送球"
           name="throwing"
-          value={formData.throwing ? formData.throwing : "D"}
+          value={formData.throwing_rank ? formData.throwing_rank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -206,13 +244,13 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={3}>
+      </Grid2>
+      <Grid2 size={{ xs: 3 }}>
         <TextField
           select
           label="回復"
           name="recovery"
-          value={formData.recovery ? formData.recovery : "D"}
+          value={formData.recovery_rank ? formData.recovery_rank : "D"}
           onChange={handleChange}
           fullWidth
         >
@@ -222,20 +260,20 @@ const PlayerAbilitiesForm = ({ formData, handleChange }) => {
             </MenuItem>
           ))}
         </TextField>
-      </Grid>
-      <Grid item xs={12}>
+      </Grid2>
+      <Grid2 size={{ xs: 12 }}>
         <TextField
           label="特殊能力"
           name="specialAbility"
-          value={formData.specialAbility}
+          value={formData.special_ability}
           onChange={handleChange}
           fullWidth
           multiline
           rows={4}
         />
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 };
 
-export default PlayerAbilitiesForm;
+export default BatterAbilityForm;

@@ -59,7 +59,7 @@ export type BatterAbilityForm = {
   special_ability: string;
 };
 
-export const buildPitcherAbilityPayload = (
+export const buildBatterAbilityPayload = (
   form: BatterAbilityForm
 ): BatterAbility => ({
   trajectory: form.trajectory ? Number(form.trajectory) : 0,

@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Typography, TextField, MenuItem, Button, Grid, Paper, FormControlLabel, Checkbox } from '@mui/material';
+import { Container, Box, Typography, Button, Paper, FormControlLabel, Checkbox, Grid2 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import BasicInfoForm from './basic_info_form';
 import BatterStatsForm from './batter_stats_form';
 import BatterAbilitiesForm from './batter_abilities_form';
-import PositionCheckboxes from './position_check_box';
-import { BatterRegisterData, createBatterRegisterData } from '../../models/batter_register_form';
 import { mapBatterRegisterResponseToFormData } from './mapper';
+
+import { BatterRegisterData, BatterRegisterFormData, createBatterRegisterData } from '../../models/batter_register_form';
+import { BatterSeasonForm, buildBatterSeasonPayload } from '../../models/batter_season';
+import { buildBatterAbilityPayload } from '../../models/batter_ability';
+import { buildPlayerSeasonPayload } from '../../models/player_season';
+
+import PlayerSeasonForm from '../../components/player_season_form';
+import PositionCheckboxes from '../../components/position_check_box';
 
 const App = () => {
   const [formData, setFormData] = useState<BatterRegisterData>(() => createBatterRegisterData());
-  const [playerDetails, setPlayerDetails] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -20,20 +24,66 @@ const App = () => {
     fetch(`http://localhost:3000/api/v1/batters/${id}/register`)
       .then(response => response.json())
       .then(data => {
-        setFormData(mapBatterRegisterResponseToFormData(data))
-
-        setPlayerDetails(data);
+        setFormData(mapBatterRegisterResponseToFormData(data));
       })
       .catch(error => console.error("Fetching data failed", error));
   }, [id]);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const handlePlayerSeasonChange: React.ChangeEventHandler< HTMLInputElement | HTMLTextAreaElement > = (e) => {
+    const { name, value } = e.target;
 
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+    setFormData(prev => ({
+      ...prev,
+      player_season: {
+        ...prev.player_season,
+        [name]: value,
+      },
+    }));
+  };
+
+  const handlePositionCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      player_season: {
+        ...prev.player_season,
+        [name]: checked,
+      },
+    }));
+  };
+
+  const handleActiveChange = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      player: {
+        ...prev.player,
+        [name]: checked,
+      },
+    }));
+  };
+
+    const handleBatterSeasonChange: React.ChangeEventHandler< HTMLInputElement | HTMLTextAreaElement > = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      batter_season: {
+        ...prev.batter_season,
+        [name]: value,
+      },
+    }));
+  };
+
+  const handleBatterAbilityChange: React.ChangeEventHandler< HTMLInputElement | HTMLTextAreaElement > = (e) => {
+    const { name, value } = e.target;
+
+    setFormData(prev => ({
+      ...prev,
+      batter_ability: {
+        ...prev.batter_ability,
+        [name]: value,
+      },
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -93,44 +143,44 @@ const App = () => {
           選手登録フォーム: {formData.player.name}
         </Typography>
         <form onSubmit={handleSubmit}>
-          <Grid item xs={4}>
+          <Grid2 size={{ xs: 4 }}>
             <FormControlLabel
-              control={<Checkbox checked={formData.player.is_active} onChange={handleChange} name="active" />}
+              control={<Checkbox checked={formData.player.is_active} onChange={handleActiveChange} name="active" />}
               label="現役選手"
             />
-          </Grid>
-          <Grid item xs={4}>
+          </Grid2>
+          <Grid2 size={{ xs: 4 }}>
             <Typography>年齢: {calculatedStats.calculateAge}</Typography>
-          </Grid>
+          </Grid2>
           <br />
-          <BasicInfoForm formData={formData} handleChange={handleChange} />
+          <PlayerSeasonForm formData={formData.player_season} handleChange={handlePlayerSeasonChange} />
           <br />
-          <PositionCheckboxes playerData={formData} handleChange={handleChange} />
+          <PositionCheckboxes formData={formData.player_season} handleChange={handlePositionCheckboxChange} />
 
-          <BatterStatsForm formData={formData} handleChange={handleChange} />
+          <BatterStatsForm formData={formData.batter_season} handleChange={handleBatterSeasonChange} />
           <br />
           <Box mt={2}>
             <Typography variant="h6">算出結果</Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={4}>
+            <Grid2 container spacing={2}>
+              <Grid2 size={{ xs: 4 }}>
                 <Typography>打率: {calculatedStats.battingAverage}</Typography>
-              </Grid>
-              <Grid item xs={4}>
+              </Grid2>
+              <Grid2 size={{ xs: 4 }}>
                 <Typography>本塁打率: {calculatedStats.homeRunRate}</Typography>
-              </Grid>
-              <Grid item xs={4}>
+              </Grid2>
+              <Grid2 size={{ xs: 4 }}>
                 <Typography>長打率: {calculatedStats.sluggingPercentage}</Typography>
-              </Grid>
-              <Grid item xs={4}>
+              </Grid2>
+              <Grid2 size={{ xs: 4 }}>
                 <Typography>出塁率: {calculatedStats.onBasePercentage}</Typography>
-              </Grid>
-              <Grid item xs={4}>
+              </Grid2>
+              <Grid2 size={{ xs: 4 }}>
                 <Typography>OPS: {calculatedStats.ops}</Typography>
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
           </Box>
           <br />
-          <BatterAbilitiesForm formData={formData} handleChange={handleChange} />
+          <BatterAbilitiesForm formData={formData.batter_ability} handleChange={handleBatterAbilityChange} />
           <Box mt={3}>
             <Button variant="contained" color="primary" type="submit">
               登録
@@ -141,67 +191,17 @@ const App = () => {
     </Container>
   );
 };
-const toNumber = (value) => {
-  const num = parseInt(value, 10);
-  return isNaN(num) ? 0 : num;
-};
 
-const createJsonData = (formData, stats, id) => {
+
+const createJsonData = (formData: BatterRegisterFormData, stats: BatterSeasonForm, id: Number) => {
   return {
     player: {
       id: id,
-      is_active: formData.active
+      is_active: formData.player.is_active
     },
-    player_season: {
-      year: formData.year,
-      age: stats.calculateAge,
-      memo: formData.seasonMemo,
-      growth_type: formData.growthType,
-      current_growth_type: formData.currentGrowthType,
-      is_starter: formData.starter,
-      is_relief: formData.relief,
-      is_closer: formData.closer,
-      is_catcher: formData.catcher,
-      is_first: formData.first,
-      is_second: formData.second,
-      is_third: formData.third,
-      is_short: formData.short,
-      is_outfielder: formData.outfielder,
-    },
-    batter_season: {
-      games: toNumber(formData.games),
-      at_bat: toNumber(formData.atBats),
-      hits: toNumber(formData.hits),
-      works: toNumber(formData.works),
-      hr: toNumber(formData.homeRuns),
-      total_bases: toNumber(formData.totalBases),
-      rbi: toNumber(formData.rbi),
-      steals: toNumber(formData.steals),
-      batting_average: stats.battingAverage,
-      ab_hr: stats.homeRunRate,
-      slg: stats.sluggingPercentage,
-      oba: stats.onBasePercentage,
-      ops: stats.ops
-    },
-    batter_ability: {
-      trajectory: formData.trajectory,
-      hit: formData.hit,
-      power: formData.power,
-      run_speed: formData.runSpeed,
-      arm_strength: formData.armStrength,
-      fielding: formData.fielding,
-      catching: formData.catching,
-      clutch_rank: formData.clutch_rank,
-      vs_lhp_rank: formData.vs_lhp_rank,
-      stealing_rank: formData.stealing_rank,
-      running_rank: formData.running_rank,
-      catcher_rank: formData.catcher_rank,
-      throwing_rank: formData.throwing_rank,
-      grit_rank: formData.grit_rank,
-      recovery_rank: formData.recovery_rank,
-      special_ability: formData.specialAbility,
-    },
-
+    player_season: buildPlayerSeasonPayload(formData.player_season),
+    batter_season: buildBatterSeasonPayload(formData.batter_season, stats),
+    batter_ability: buildBatterAbilityPayload(formData.batter_ability),
   };
 };
 

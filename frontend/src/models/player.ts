@@ -32,16 +32,16 @@ export const createPlayer = (overrides?: Partial<Player>): Player => ({
 // 送信フォーム用
 export type PlayerForm = {
     name: string;
-    birthday: string;
-    is_active: string;
-    is_favorite: string;
-    roy: string;
+    birthday: string | null;
+    is_active: boolean;
+    is_favorite: boolean;
+    roy: boolean;
     draft_year: string;
     draft_type: string;
     draft_rank: string;
     season_count: string;
-    is_batter: string;
-    is_pitcher: string;
+    is_batter: boolean;
+    is_pitcher: boolean;
     memo?: string;
 
 };
@@ -52,13 +52,13 @@ export const buildPlayerPayload = (
     name: form.name || '',
     birthday: form.birthday || null,
     memo: form.memo || '',
-    is_active: form.is_active === "true",
-    is_favorite: form.is_favorite === "true",
-    roy: form.roy === "true",
+    is_active: form.is_active,
+    is_favorite: form.is_favorite,
+    roy: form.roy,
     draft_year: form.draft_year ? Number(form.draft_year) : 0,
     draft_type: form.draft_type || '',
     draft_rank: form.draft_rank ? Number(form.draft_rank) : 0,
     season_count: form.season_count ? Number(form.season_count) : 0,
-    is_batter: form.is_batter === "true",    
-    is_pitcher: form.is_pitcher === "true",
+    is_batter: form.is_batter,    
+    is_pitcher: form.is_pitcher,
 });

@@ -1,7 +1,6 @@
 import React from 'react';
-import { Grid2, TextField, Checkbox, FormControlLabel, MenuItem } from '@mui/material';
-import { roundWithScale, grouthTypeDisplay, currentGrouthTypeDisplay } from '../../components/utils'; // utility functions
-import { PlayerSeason } from '../../models/player_season';
+import { Grid2, TextField, MenuItem } from '@mui/material';
+import { PlayerSeason } from '../models/player_season';
 
 
 const growthType = [
@@ -29,6 +28,7 @@ type PlayerSeasonFormProps = {
   >;
 };
 
+// 選手の年齢などの情報登録部分
 const PlayerSeasonForm: React.FC<PlayerSeasonFormProps>  = ({ formData, handleChange }) => {
   return (
     <Grid2 container spacing={2}>
@@ -53,7 +53,7 @@ const PlayerSeasonForm: React.FC<PlayerSeasonFormProps>  = ({ formData, handleCh
           select
           label="成長タイプ"
           name="growth_type"
-          value={formData.growth_type ?? ''} // nullish coalescing operatorでデフォルト値を設定
+          value={formData.growth_type ?? ''} 
           onChange={handleChange}
           fullWidth
         >

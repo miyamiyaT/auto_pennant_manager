@@ -45,15 +45,15 @@ export type PlayerSeasonForm = {
   number: string;
   growth_type: string;
   current_growth_type: string;
-  is_starter: string;
-  is_relief: string;
-  is_closer: string;
-  is_catcher: string;
-  is_first: string;
-  is_second: string;
-  is_third: string;
-  is_short: string;
-  is_outfielder: string;
+  is_starter: boolean;
+  is_relief: boolean;
+  is_closer: boolean;
+  is_catcher: boolean;
+  is_first: boolean;
+  is_second: boolean;
+  is_third: boolean;
+  is_short: boolean;
+  is_outfielder: boolean;
   plate_appearances: string;
   memo: string;
 };
@@ -66,15 +66,15 @@ export const buildPlayerSeasonPayload = (
   number: form.number || '',
   growth_type: form.growth_type || 'normal',
   current_growth_type: form.current_growth_type || 'decline_phase',
-  is_starter: form.is_starter === "true",
-  is_relief: form.is_relief === "true",
-  is_closer: form.is_closer === "true",
-  is_catcher: form.is_catcher === "true",
-  is_first: form.is_first === "true",
-  is_second: form.is_second === "true",
-  is_third: form.is_third === "true",
-  is_short: form.is_short === "true",
-  is_outfielder: form.is_outfielder === "true",
+  is_starter: form.is_starter,
+  is_relief: form.is_relief,
+  is_closer: form.is_closer,
+  is_catcher: form.is_catcher,
+  is_first: form.is_first,
+  is_second: form.is_second,
+  is_third: form.is_third,
+  is_short: form.is_short,
+  is_outfielder: form.is_outfielder,
   plate_appearances: form.plate_appearances || '',
   memo: form.memo || ''
 });

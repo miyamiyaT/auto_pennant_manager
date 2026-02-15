@@ -96,7 +96,7 @@ const PitcherStatsForm: React.FC<PitcherSeasonFormProps>  = ({ formData, handleC
         <TextField
           type="number"
           label="ホールド数"
-          name="holdPoints"
+          name="hold_points"
           value={formData.hold_points}
           onChange={handleChange}
           fullWidth
@@ -160,7 +160,7 @@ const PitcherStatsForm: React.FC<PitcherSeasonFormProps>  = ({ formData, handleC
         <TextField
           type="number"
           label="被安打数"
-          name="hitsAllowedNumbers"
+          name="hits_allowed_numbers"
           value={formData.hits_allowed_numbers}
           onChange={handleChange}
           fullWidth
@@ -176,7 +176,7 @@ const PitcherStatsForm: React.FC<PitcherSeasonFormProps>  = ({ formData, handleC
         <TextField
           type="number"
           label="自責点"
-          name="earnedRuns"
+          name="earned_runs"
           value={formData.earned_runs}
           onChange={handleChange}
           fullWidth

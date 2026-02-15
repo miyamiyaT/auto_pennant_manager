@@ -4,18 +4,18 @@ import { buildPitcherAbilityPayload } from '../../models/pitcher_ability';
 
 import { mapPitcherRegisterResponseToFormData } from './mapper';
 
-import { Container, Box, Typography, Button, Grid, Paper, FormControlLabel, Checkbox } from '@mui/material';
+import { Container, Box, Typography, Button, Grid, Paper, FormControlLabel, Checkbox, Grid2 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 
 
 import PitcherStatsForm from './pitcher_stats_form';
 import PitcherAbilitiesForm from './pitcher_abilities_form';
-import PositionCheckboxes from './position_check_box';
+import PositionCheckboxes from '../../components/position_check_box';
 import BreakingBallForm from './breaking_ball_form';
-import PlayerSeasonForm from './player_season_form';
 import { BreakingBall } from '../../models/breaking_ball';
 import { buildPlayerSeasonPayload } from '../../models/player_season';
 import { buildPitcherSeasonPayload, PitcherSeasonForm } from '../../models/pitcher_season';
+import PlayerSeasonForm from '../../components/player_season_form';
 
 const App = () => {
   const [formData, setFormData] = useState<PitcherRegisterData>(() => createPitcherRegisterData());
@@ -68,7 +68,6 @@ const handlePositionCheckboxChange: React.ChangeEventHandler<HTMLInputElement> =
 
     const handlePitcherSeasonChange: React.ChangeEventHandler< HTMLInputElement | HTMLTextAreaElement > = (e) => {
     const { name, value } = e.target;
-
     setFormData(prev => ({
       ...prev,
       pitcher_season: {
@@ -124,20 +123,21 @@ const handlePositionCheckboxChange: React.ChangeEventHandler<HTMLInputElement> =
     const stats = calculateStats();
     const finalData = createJsonData(formData, stats, id);
 
-    fetch(`http://localhost:3000/api/v1/pitchers`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(finalData),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Successfully updated:', data);
-        alert('登録が完了しました！');
-        navigate(-1);
-      })
-      .catch(error => console.error('Error updating data:', error));
+    console.log(finalData)
+    // fetch(`http://localhost:3000/api/v1/pitchers`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(finalData),
+    // })
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     console.log('Successfully updated:', data);
+    //     alert('登録が完了しました！');
+    //     navigate(-1);
+    //   })
+    //   .catch(error => console.error('Error updating data:', error));
   };
 
   const calculateStats = () => {
@@ -178,15 +178,15 @@ console.log(formData)
           選手登録フォーム: {formData.player.name}
         </Typography>
         <form onSubmit={handleSubmit}>
-          <Grid item xs={4}>
+          <Grid2 size={{ xs: 4 }}>
             <FormControlLabel
               control={<Checkbox checked={formData.player.is_active} onChange={handleActiveChange} name="is_active" />}
               label="現役選手"
             />
-          </Grid>
-          <Grid item xs={4}>
+          </Grid2>
+          <Grid2 size={{ xs: 4 }}>
             <Typography>年齢: {calculatedStats.calculateAge}</Typography>
-          </Grid>
+          </Grid2>
           <br />
           <PlayerSeasonForm formData={formData.player_season} handleChange={handlePlayerSeasonChange} />
           <br />
@@ -196,26 +196,26 @@ console.log(formData)
           <br />
           <Box mt={2}>
             <Typography variant="h6">算出結果</Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={4}>
+            <Grid2 container spacing={2}>
+              <Grid2 size={{ xs: 4 }}>
                 <Typography>防御率: {calculatedStats.era}</Typography>
-              </Grid>
-              <Grid item xs={4}>
+              </Grid2>
+              <Grid2 size={{ xs: 4 }}>
                 <Typography>勝率: {calculatedStats.winRate}</Typography>
-              </Grid>
-              <Grid item xs={4}>
+              </Grid2>
+              <Grid2 size={{ xs: 4 }}>
                 <Typography>奪三振率: {calculatedStats.k9}</Typography>
-              </Grid>
-              <Grid item xs={4}>
+              </Grid2>
+              <Grid2 size={{ xs: 4 }}>
                 <Typography>四死球率: {calculatedStats.bb9}</Typography>
-              </Grid>
-              <Grid item xs={4}>
+              </Grid2>
+              <Grid2 size={{ xs: 4 }}>
                 <Typography>K/BB: {calculatedStats.kBb}</Typography>
-              </Grid>
-              <Grid item xs={4}>
+              </Grid2>
+              <Grid2 size={{ xs: 4 }}>
                 <Typography>whip: {calculatedStats.whip}</Typography>
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
           </Box>
           <br />
           <PitcherAbilitiesForm formData={formData.pitcher_ability} handleChange={handlePitcherAbilityChange} />
